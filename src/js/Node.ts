@@ -1,36 +1,24 @@
-
 import { Connector } from "./Connector.js";
-type InValue = string[]
-type outValue = string[]
-type runFunction = (inval:InValue)=>outValue
 
-export class Nodes {
-    input: Connector[];
-    output: Connector[];
-    runFunction:runFunction
-    
-    constructor(inputList:Connector[],
-        outputList:Connector[],
-        runFunction:runFunction
-    ) {
-        this.input = inputList;
-        this.output = outputList;
-        this.runFunction = runFunction
+export class Node {
+    name:string
+    id:string
+    connectors: Connector[] = []
+    runFunction = () => {}
+
+    constructor (id:string, name:string) {
+        this.id = id
+        this.name = name
     }
 
 
-    runNode() {
+    
 
-        // Get value for function
-        const inputsForFunction:InValue = Connector.getConnValue(this.input)
+    addConn (id:string) {
+        this.connectors.push(new Connector(id))
+    }
+    
+    editNode () {
 
-        // Get value for output(Run function)
-        const valueForOutput:outValue = this.runFunction(inputsForFunction);
-
-        // Set output
-        
-
-        return valueForOutput
-        // Let know that the next node is ready
     }
 }

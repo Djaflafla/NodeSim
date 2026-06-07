@@ -8,5 +8,11 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "uuid": "^14.0.0"
+  },
+  "devDependencies": {
+    "@types/uuid": "^11.0.0"
+  }
 }
