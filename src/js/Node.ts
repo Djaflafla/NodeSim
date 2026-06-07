@@ -1,14 +1,14 @@
 import { Connector } from "./Connector.js";
-
 export class Node {
     name:string
     id:string
     connectors: Connector[] = []
     runFunction = () => {}
 
-    constructor (id:string, name:string) {
-        this.id = id
+    constructor (name:string) {
+        this.id = crypto.randomUUID().slice(30)
         this.name = name
+        
     }
 
 

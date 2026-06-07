@@ -9,6 +9,24 @@
 <!-- Throw error if no icon -->
 <link rel="icon" href="/src/ico/favicon.ico">
 <script type="module" src="./dist/js/main.js"></script>
+<style>
+    #body {
+    position: relative; /* important: anchor for absolute children */
+    width: auto;
+    height: auto;
+    margin: 0;
+    border: 1px solid #ccc;
+}
+
+#connLines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* clicks go through SVG */
+}
+</style>
 
 
 <body id="body">
@@ -18,8 +36,7 @@
         <button id="linkButton">Link</button>
         <p id="toLink">To Link (out to in): </p>
     </div>
-    <div id="wsDiv">
-       
-    </div>
+    <div id="wsDiv"></div>
+    <svg id="connLines"></svg>
 </body>
 </html>

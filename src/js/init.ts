@@ -7,22 +7,11 @@ export function init (workspace:Workspace) {
     let newNodeButton= document.getElementById("newNodeButton")
     let linkButton = document.getElementById("linkButton")
 
-    if (newNodeButton && userInput && linkButton){
+    if (!newNodeButton || !userInput || !linkButton){return}
         
-        newNodeButton.addEventListener("click", ()=>{
-            workspace.createNode(
-                crypto.randomUUID().slice(30),
-                userInput.value
-            )
-        })
-        linkButton.addEventListener("click", ()=>{workspace.link()})
-    }
-    
-    document.addEventListener("render", ()=> {renderNodes(workspace.nodeList, workspace)})
-    document.addEventListener("renderToLink", ()=> {renderToLink(workspace)})
+    linkButton.addEventListener("click", ()=>{workspace.link()})
 
+    newNodeButton.addEventListener("click", ()=>{
+        workspace.createNode(userInput.value)
+    })
 }
-
-
-// link button click
-// new node button click

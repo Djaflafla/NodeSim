@@ -5,13 +5,19 @@ import * as html from "./htmlUtils.js"
 import { init } from "./init.js";
 
 const workspace = new Workspace()
+const ws = workspace
 init(workspace)
 
 
 
 
 
-// create node
+
+
+
+
+
+
+// edit node
 // connect node
-// see something
-//
+// draw line

@@ -1,27 +1,27 @@
 import { Connector } from "./Connector.js"
 import { Node } from "./Node.js"
-import { renderNodes, renderToLink } from "./Render.js"
+import { printConnMap, renderNodes, renderToLink, printLine } from "./Render.js"
 
 export class Workspace {
     nodeList:Node[] = []
-    linkCouple:string[] = []
+    connToLink:string[] = []
     connToNode:string[][] = []
     connection:string[][] = []
 
     
     // Create a node and push to nodeList
-    createNode (id:string, name = "") {
-        let nn = new Node(id, name)
+    createNode (name = "") {
+        let nn = new Node(name)
         this.nodeList.push(nn)
-        document.dispatchEvent(new Event("render"))
+        renderNodes(this.nodeList, this)
         return nn
     }
 
     toLink (connID:string) {
-        if (this.linkCouple.length>1) {
-            this.linkCouple.shift()
+        if (this.connToLink.length>1) {
+            this.connToLink.shift()
         }
-        this.linkCouple.push(connID)
+        this.connToLink.push(connID)
         renderToLink(this)
     }
 
@@ -30,20 +30,15 @@ export class Workspace {
         node.connectors.push(newConn)
         this.connToNode.push([newConn.id, node.id])
         renderNodes(this.nodeList, this)
+        return newConn
     }
 
 
     link() {
-        if (this.linkCouple.length !== 2) {
-            console.log("need 2 conn to link")
-            return
-        }
-        if (this.linkCouple[0] && this.linkCouple[1]){
-            let conn = []
-            conn[0]=this.linkCouple[0]
-            conn[1]=this.linkCouple[1]
-            this.connection.push(conn)
-            console.log(`connected conns ${this.linkCouple[0]} and ${this.linkCouple[1]}`)
-        }
+        if (!this.connToLink[0] || !this.connToLink[1]){return}
+
+        this.connection.push(this.connToLink)
+        printLine(this.connToLink[0], this.connToLink[1])
+        console.log(`connected conns ${this.connToLink[0]} and ${this.connToLink[1]}`)
     }
 }

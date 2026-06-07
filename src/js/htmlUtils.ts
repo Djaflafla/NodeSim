@@ -12,3 +12,11 @@ export function createElement(type:string, id:string = ""){
     newElem.id = id
     return newElem
 }
+
+export function getButton(id:string){
+    return document.getElementById(id)
+}
+
+export function createSvg (type:string) {
+    return document.createElementNS("http://www.w3.org/2000/svg", type)
+}
