@@ -4,14 +4,25 @@ import { printConnMap, renderNodes, renderToLink, printLine } from "./Render.js"
 
 export class Workspace {
     nodeList:Node[] = []
+    idsToObject:string|Node|Connector[][] = []
     connToLink:string[] = []
     connToNode:string[][] = []
     connection:string[][] = []
+    Q:Node[]=[]
 
-    
+    checkQ () {
+        // if Node in Q, run it
+
+        if (this.Q.length = 0) {return}
+        if (!this.Q[0]) {return}
+
+        this.Q[0].run()
+        this.Q.shift()
+    }
+
     // Create a node and push to nodeList
     createNode (name = "") {
-        let nn = new Node(name)
+        let nn = new Node(name, ()=>{})
         this.nodeList.push(nn)
         renderNodes(this.nodeList, this)
         return nn

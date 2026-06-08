@@ -1,23 +1,22 @@
 
-
+import {Menu} from "./Menu.js"
 import { Workspace } from "./Workspace.js"
 import * as html from "./htmlUtils.js"
-import { init } from "./init.js";
 
-const workspace = new Workspace()
-const ws = workspace
-init(workspace)
+const menu = new Menu()
+const ws = new Workspace()
 
 
+// while (true) {
+//     menu.checkValue()
+//     ws.checkQ()
+// }
+
+// menu
+// menu.checkValue()
+// ws.checkQ()
 
 
-
-
-
-
-
-
-
-// edit node
-// connect node
-// draw line
+// Trigger node
+// set conn
+// put next node in Q

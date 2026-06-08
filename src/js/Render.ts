@@ -46,11 +46,10 @@ export function printConnMap (ws:Workspace) {
 //          </div>
 
 export function createNodeDiv(node:Node, workspace:Workspace) {
-    let nodeDiv = html.createElement("div", node.id)
+    let nodeDiv = html.createElement("div", "nodeDiv")
     
     // name section
-    let name = html.createElement("p")
-    name.textContent = node.name
+    let name = html.createButton(node.id, node.name, ()=>{})
     nodeDiv.appendChild(name)
     
     // create a button for every conn and print value

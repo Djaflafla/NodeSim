@@ -1,9 +1,8 @@
-
-
-
 export class Connector {
     id:string;
-    value:string="0"
+    value:string = ""
+    type = "connector"
+    
 
     constructor (id:string ) {
         this.id = id
