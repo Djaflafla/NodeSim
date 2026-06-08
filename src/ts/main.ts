@@ -6,14 +6,20 @@ import * as html from "./htmlUtils.js"
 const menu = new Menu()
 const ws = new Workspace()
 
+menu.objectToOption = [{value:"3", option:["dodo"]}]
+const ib = menu.inputBar? menu.inputBar.addEventListener(
+    "keydown", 
+    ()=>{menu.optionToShow = []; menu.checkValue()}
+):null
 
-// while (true) {
-//     menu.checkValue()
-//     ws.checkQ()
-// }
+
+
+// menu.checkValue()
+// update after the next keydown
+
+
 
 // menu
-// menu.checkValue()
 // ws.checkQ()
 
 
