@@ -39,18 +39,14 @@ export function printConnMap (ws:Workspace) {
 //             <button id="conn1">val</button>
 //             <button id="conn2">val</button>
 //             <button id="conn3">val</button>
-//             <p></p>
-//             <button id="newConn">New Connector</button>
-//             <button id="rmConn">Remove Connector</button>
-//             <button id="rmNode">Remove Node</button>
 //          </div>
 
 export function createNodeDiv(node:Node, workspace:Workspace) {
     let nodeDiv = html.createElement("div", "nodeDiv")
     
     // name section
-    let name = html.createButton(node.id, node.name, ()=>{})
-    nodeDiv.appendChild(name)
+    let nameButton = html.createButton(node.id, node.name, ()=>{})
+    nodeDiv.appendChild(nameButton)
     
     // create a button for every conn and print value
     node.connectors.forEach((conn, i) => {

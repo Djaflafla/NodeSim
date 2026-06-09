@@ -1,4 +1,5 @@
 
+import {Node} from "./Node.js"
 import {Menu} from "./Menu.js"
 import { Workspace } from "./Workspace.js"
 import * as html from "./htmlUtils.js"
@@ -6,20 +7,21 @@ import * as html from "./htmlUtils.js"
 const menu = new Menu()
 const ws = new Workspace()
 
-menu.objectToOption = [{value:"3", option:["dodo"]}]
-const ib = menu.inputBar? menu.inputBar.addEventListener(
-    "keydown", 
-    ()=>{menu.optionToShow = []; menu.checkValue()}
-):null
+menu.objTracker = [{id:"3", obj:new Node()}]
 
 
-
-// menu.checkValue()
-// update after the next keydown
+// check value everytime the inputbar is edited
+menu.inputBar? menu.inputBar.addEventListener("input", ()=>{
+    menu.inputUpdate()
+}):console.log("no input bar")
 
 
 
 // menu
+// render menu button
+// give action to button
+
+
 // ws.checkQ()
 
 

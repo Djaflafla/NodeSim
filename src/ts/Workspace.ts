@@ -21,8 +21,8 @@ export class Workspace {
     }
 
     // Create a node and push to nodeList
-    createNode (name = "") {
-        let nn = new Node(name, ()=>{})
+    createNode () {
+        let nn = new Node()
         this.nodeList.push(nn)
         renderNodes(this.nodeList, this)
         return nn
