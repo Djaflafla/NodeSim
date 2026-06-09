@@ -2,7 +2,10 @@ export class Connector {
     id:string;
     value:string = ""
     type = "connector"
-    option:string[] = ["delConn", "link"]
+    option: {opt:string, func:()=>void}[] = [
+        {opt:"link", func:()=>{}},
+        {opt:"delConn", func:()=>{}}
+    ]
     
 
     constructor (id:string ) {

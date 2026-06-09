@@ -1,6 +1,6 @@
 import { Connector } from "./Connector.js"
 import { Node } from "./Node.js"
-import { printConnMap, renderNodes, renderToLink, printLine } from "./Render.js"
+import {Renderer as R} from "./Render.js"
 
 export class Workspace {
     nodeList:Node[] = []
@@ -24,7 +24,7 @@ export class Workspace {
     createNode () {
         let nn = new Node()
         this.nodeList.push(nn)
-        renderNodes(this.nodeList, this)
+        R.rnode(this.nodeList, this)
         return nn
     }
 
@@ -33,14 +33,14 @@ export class Workspace {
             this.connToLink.shift()
         }
         this.connToLink.push(connID)
-        renderToLink(this)
+        R.renderToLink(this)
     }
 
     addConn(node:Node){
         let newConn = new Connector(crypto.randomUUID().slice(30))
         node.connectors.push(newConn)
         this.connToNode.push([newConn.id, node.id])
-        renderNodes(this.nodeList, this)
+        R.rnode(this.nodeList, this)
         return newConn
     }
 
@@ -49,7 +49,7 @@ export class Workspace {
         if (!this.connToLink[0] || !this.connToLink[1]){return}
 
         this.connection.push(this.connToLink)
-        printLine(this.connToLink[0], this.connToLink[1])
+        R.printLine(this.connToLink[0], this.connToLink[1])
         console.log(`connected conns ${this.connToLink[0]} and ${this.connToLink[1]}`)
     }
 }

@@ -1,12 +1,13 @@
 import type { Connector } from "./Connector.js";
 import type { Node } from "./Node.js";
+import { Renderer } from "./Render.js";
 
 // no input bar error message
 const NIBEM = "noBar"
 
 // input bar id 
 const IBI = "userInput"
-const BASICOPTION = ["newNode"]
+const BASICOPTION = [{opt:"newNode", func:()=>{}}]
 
 
 export class Menu {
@@ -20,25 +21,24 @@ export class Menu {
     inputUpdate() {
         let inputValue = this.getInputValue()
         
-        // Check if value is the same as last
+        // Check if value is the same as last or null
         if (inputValue == this.lastValue) {return}
 
-        // pipe list of option to the renderer
-        this.updateMenuOptions(this.getOption(inputValue))
+        // pipe list of optObj to the renderer
+        Renderer.menuOption(this.getOption(inputValue))
 
         this.lastValue = inputValue
     }
 
-    // look if known
-    // or return basic
-    getOption: (id:string)=>string[] = (id)=>{
+    // return option object {opt, func} from id
+    getOption: (id:string)=>Connector["option"] = (id)=>{
+        if (id=="") {return []}
+        
         // check if id match a know object
         let match = this.objTracker.find(obj=> obj.id === id)
         
         // if not know, return basic options
-        if (!match) {
-            return BASICOPTION
-        }
+        if (!match) {return BASICOPTION}
         return match.obj.option
     }
     
@@ -46,9 +46,5 @@ export class Menu {
         if (!this.inputBar) {return NIBEM}
         return this.inputBar.value
     }
-    
-    updateMenuOptions(optList:string[]) {
-        console.log("need to render option")
 
-    }
 }

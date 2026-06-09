@@ -5,7 +5,11 @@ export class Node {
     id:string
     connectors: Connector[] = []
     run:() => void
-    option: string[] = ["edit", "addConn", "delNode"]
+    option: {opt:string, func:()=>void}[] = [
+        {opt:"edit", func:()=>{}},
+        {opt:"addConn", func:()=>{}},
+        {opt:"delNode", func:()=>{}}
+    ]
 
     constructor (func:()=>void = ()=>{}) {
         this.id = crypto.randomUUID().slice(30)
