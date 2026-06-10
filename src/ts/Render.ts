@@ -1,9 +1,10 @@
 import type { Connector } from "./Connector.js"
 import * as html from "./htmlUtils.js"
+import type { OptionList } from "./Workspace.js"
 import { Node } from "./Node.js"
 import { Workspace } from "./Workspace.js"
 
-const BUTTONSECTION = document.getElementById("buttonSection")
+const BUTTONSECTION = document.getElementById("buttonSection")!
 const FAKEID = "fakeID"
 
 
@@ -11,56 +12,6 @@ const FAKEID = "fakeID"
 // Print wtv on screen
 
 export class Renderer {
-    static rnode(nodeList:Node[], workspace:Workspace) {
-        // clean old div
-        let parent = document.getElementById("wsDiv")
-        if (!parent) {return}
-        parent.replaceChildren()
-        nodeList.forEach((node)=>{
-            let div = Renderer.createNodeDiv(node, workspace)
-            parent.appendChild(div)
-        })
-    }
-
-    static renderToLink (workspace:Workspace) {
-        let toLink= document.getElementById("toLink")
-        if (!toLink){return}
-        
-        let str = "To Link (out to in): "
-        workspace.connToLink.forEach(conn=>{str+=conn+"  "})
-        toLink.textContent=str
-    }
-
-    static createNodeDiv(node:Node, workspace:Workspace) {
-        let nodeDiv = html.createElement("div", "nodeDiv")
-        
-        // name section
-        let nameButton = html.createButton(node.id, node.name, ()=>{})
-        nodeDiv.appendChild(nameButton)
-
-        // create a button for every conn and print value
-        node.connectors.forEach((conn, i) => {
-            let button = html.createButton(
-                conn.id,
-                conn.value,
-                () => {
-                    workspace.toLink(conn.id);
-                }
-            );
-            nodeDiv.appendChild(button)
-        });
-        // Spacing
-        nodeDiv.appendChild(html.createElement("p"))
-
-        // Node options
-        nodeDiv.appendChild(html.createButton(
-            "New conn",
-            "New Conn",
-            ()=>{workspace.addConn(node)}
-        ))
-        return nodeDiv
-    }
-
     static printLine(id1:string, id2:string) {
         // get but1 pos
         let but1Pos = html.getButton(id1)?.getBoundingClientRect()
@@ -83,18 +34,46 @@ export class Renderer {
     }
 
     // create a button and add it to the page for every options
-    static menuOption(optObjList:Connector["option"]) {
-        if (!BUTTONSECTION) {return}
+    static menuOption(optList:OptionList) {
         BUTTONSECTION.replaceChildren()
-        if (optObjList.length==0){return }
+        if (optList.length==0){return}
 
         // forEach object: create button
-        optObjList.forEach(obj=>{
-            let b1 = html.createButton(FAKEID, obj.opt, obj.func)
+        optList.forEach(opt=>{
+            let b1 = html.createButton(FAKEID, opt.type, opt.func)
             BUTTONSECTION.appendChild(b1)
         })
     }
+    
+    // static rnode(nodeList:Node[], workspace:Workspace) {
+    //     // clean old div
+    //     let parent = document.getElementById("wsDiv")
+    //     if (!parent) {return}
+    //     parent.replaceChildren()
+    //     nodeList.forEach((node)=>{
+    //         let div = Renderer.createNodeDiv(node, workspace)
+    //         parent.appendChild(div)
+    //     })
+    // }
 
+    // static createNodeDiv(node:Node, workspace:Workspace) {
+
+    //     // create a button for every conn and print value
+    //     node.connectors.forEach((conn, i) => {
+    //         let button = html.createButton(
+    //             conn.id,
+    //             conn.value,
+    //             () => {
+    //                 workspace.toLink(conn.id);
+    //             }
+    //         );
+    //         nodeDiv.appendChild(button)
+    //     });
+
+    //     return nodeDiv
+    // }
+
+    
 
 }
 
