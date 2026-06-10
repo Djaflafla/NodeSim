@@ -9,14 +9,13 @@ const ws = new Workspace()
 init(ws)
 
 
-
-
-
 ws.createPiece("node", "m1")
+ws.createPiece("node", "m2")
 ws.createPiece("conn", "m2")
 console.log(ws.pieceCollection)
 
 
+// print node on creation
 
 // Give functions to menu buttons
 

@@ -3,8 +3,10 @@ import * as html from "./htmlUtils.js"
 import type { OptionList } from "./Workspace.js"
 import { Node } from "./Node.js"
 import { Workspace } from "./Workspace.js"
+import { Menu } from "./Menu.js"
 
 const BUTTONSECTION = document.getElementById("buttonSection")!
+const NODESPACE = document.getElementById("nodeSpace")!
 const FAKEID = "fakeID"
 
 
@@ -12,6 +14,45 @@ const FAKEID = "fakeID"
 // Print wtv on screen
 
 export class Renderer {
+    
+    static renderWS(ws:Workspace){
+        Renderer.updateMenu(ws)
+        Renderer.updateConn(ws)
+        Renderer.updateNode(ws)
+    }
+
+    static updateMenu(ws:Workspace) {
+        BUTTONSECTION.replaceChildren()
+        let optList = Menu.getOption(ws.menu.getInputValue(), ws.optList, ws.pieceCollection)
+        if (optList.length==0){return}
+        
+        // forEach object: create button
+        optList.forEach(opt=>{
+            let b1 = html.createButton(opt.type, opt.func)
+            BUTTONSECTION.appendChild(b1)
+        })
+    }
+
+    static updateNode(ws:Workspace) {
+        // clean old div
+        let nodeSpace = NODESPACE
+        nodeSpace.replaceChildren()
+
+        ws.pieceCollection.forEach(piece=>{
+            if (piece instanceof Node) {
+                let div = Renderer.createNodeDiv(piece, ws)
+                nodeSpace.appendChild(div)
+            }
+        })
+
+    }
+        
+    // static rnode(nodeList:Node[], workspace:Workspace) {
+
+    static updateConn(ws:Workspace) {
+
+    }
+
     static printLine(id1:string, id2:string) {
         // get but1 pos
         let but1Pos = html.getButton(id1)?.getBoundingClientRect()
@@ -32,46 +73,33 @@ export class Renderer {
         line.setAttribute("stroke", "black")
         line.setAttribute("stroke-width", "2")
     }
-
-    // create a button and add it to the page for every options
-    static menuOption(optList:OptionList) {
-        BUTTONSECTION.replaceChildren()
-        if (optList.length==0){return}
-
-        // forEach object: create button
-        optList.forEach(opt=>{
-            let b1 = html.createButton(FAKEID, opt.type, opt.func)
-            BUTTONSECTION.appendChild(b1)
-        })
-    }
     
-    // static rnode(nodeList:Node[], workspace:Workspace) {
-    //     // clean old div
-    //     let parent = document.getElementById("wsDiv")
-    //     if (!parent) {return}
-    //     parent.replaceChildren()
-    //     nodeList.forEach((node)=>{
-    //         let div = Renderer.createNodeDiv(node, workspace)
-    //         parent.appendChild(div)
-    //     })
-    // }
+    
+    
+            
+    static createNodeDiv(node:Node, ws:Workspace) {
+        let nodeDiv = html.createElement("div", node.id)
 
-    // static createNodeDiv(node:Node, workspace:Workspace) {
+        //create button for name
+        let button = html.createButton(node.name!, ()=>{ws.menu.inputBar.value = node.name!; Renderer.updateMenu(ws)})
+        nodeDiv.appendChild(button)
+        
+        return nodeDiv
+    }
 
-    //     // create a button for every conn and print value
-    //     node.connectors.forEach((conn, i) => {
-    //         let button = html.createButton(
-    //             conn.id,
-    //             conn.value,
-    //             () => {
-    //                 workspace.toLink(conn.id);
-    //             }
-    //         );
-    //         nodeDiv.appendChild(button)
-    //     });
+        // // create a button for every conn and print value
+        // node.connectors.forEach((conn, i) => {
+        //     let button = html.createButton(
+        //         conn.id,
+        //         conn.value,
+        //         () => {
+        //             workspace.toLink(conn.id);
+        //         }
+        //     );
+        //     nodeDiv.appendChild(button)
+        // });
 
-    //     return nodeDiv
-    // }
+    
 
     
 

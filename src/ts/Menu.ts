@@ -6,34 +6,16 @@ import type { Node } from "./Node.js";
 import type { Workspace } from "./Workspace.js";
 
 
-const NIBEM = "noBar"       // no input bar error message
-const IBI = "userInput"     // input bar id 
-
-
 type GetOption = (input:string, option:OptionList, pieceCollection:Piece[])=>OptionList
+const NIBEM = "noBar"       // no input bar error message
+const INBAR = document.getElementById("userInput") as HTMLInputElement  // input bar Element
+
+
 
 export class Menu {
-    inputBar= document.getElementById(IBI) as HTMLInputElement | null;
+    inputBar= INBAR;
     lastValue:string = ""
     pieceCollection:Piece[] = []
-     
-    // if new input value
-    // update menu option with given option
-    inputUpdate(option:OptionList, pc:Piece[]) {
-        let inputValue = this.getInputValue()
-        
-        // // Check if value is the same as last or null
-        // if (inputValue == this.lastValue) {return}
-
-
-        // pipe list of optObj to the renderer
-        let c =  Menu.getOption(inputValue, option, pc)!
-        Renderer.menuOption(c)
-
-        this.lastValue = inputValue
-    }
-    
-
     
     static getOption:GetOption = (input, option, pc)=>{
         if (input=="") {return []}

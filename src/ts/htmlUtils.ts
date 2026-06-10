@@ -1,5 +1,5 @@
 // Returns a button with: id, text, function
-export function createButton (id:string, text:string, func:()=>void) {
+export function createButton (text:string,  func:()=>void, id?:string) {
     let button = createElement("button", id)
     button.textContent = text
     button.addEventListener("click", func)
@@ -7,9 +7,9 @@ export function createButton (id:string, text:string, func:()=>void) {
 }
 
 // Returns document element with id
-export function createElement(type:string, id:string = ""){ 
+export function createElement(type:string, id?:string ){ 
     let newElem = document.createElement(type)
-    newElem.id = id
+    if (id) {newElem.id = id}
     return newElem
 }
 

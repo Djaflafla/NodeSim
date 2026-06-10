@@ -8,6 +8,7 @@ export type OptionList = {
     type:string, 
     func:()=>void
 }[]
+type CreatePiece=(type:"node"|"conn", name:string, func?:()=>void)=> Node|Connector|Piece
 
 const POSSPIECE = [
             {type:"node", cstr:Node},
@@ -16,9 +17,7 @@ const POSSPIECE = [
 
 
 export class Workspace {
-    nodeList:Node[] = []
     connToLink:string[] = []
-    connToNode:string[][] = []
     connection:string[][] = []
     Q:Piece[]=[]
     pieceCollection:Piece[] = []
@@ -31,7 +30,7 @@ export class Workspace {
         {type:"newNode", func:()=>{
             // create node
             this.createPiece("node", this.menu.getInputValue())
-            
+
             // console.log(this.pieceCollection)
         }},
         {type:"link", func:()=>{}},
@@ -47,18 +46,16 @@ export class Workspace {
         this.Q.shift()
     }
 
-    // Create a node and push to nodeList
-    createPiece:(type:string, name?:string, func?:()=>void)=> Node|Connector|Piece = (type:string, name="", func=()=>{})=>{
+    // Create a node and push to pieceCollection
+    createPiece: CreatePiece=(type, name, func=()=>{})=>{
         let id = crypto.randomUUID()
-
-        let piece = POSSPIECE.find(obj=>obj.type === type)
-        if (!piece){return new Piece(id)}
-
-        let newP = new piece.cstr(id, name, func)!
+        let piece = POSSPIECE.find(obj=>obj.type === type)!
+        let newP = new piece.cstr(id, func, name)
 
         this.pieceCollection.push(newP)
-        this.menu.inputUpdate(this.optList, this.pieceCollection)
         console.log("new piece created")
+        R.renderWS(this)
+
         return newP
         
     }

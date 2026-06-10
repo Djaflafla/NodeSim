@@ -1,16 +1,14 @@
+import type { Node } from "./Node.js";
 import { Piece } from "./Piece.js";
 
+const CONNOPTION = ["link", "delConn"]
 export class Connector extends Piece{
-    value:string
+    value:string = ""
+    option = CONNOPTION
+    type = "connector"
 
-    
-
-    constructor (id:string, name:string, func:()=>void) {
-        super(id, name, func)
-        this.option = ["link", "delConn"]
-        this.value = ""
-        this.type = "connector"
-        this.value = ""
+    constructor (id:string, func:()=>void, name?:string) {
+        super(id, func, name)
     }
 
 }
