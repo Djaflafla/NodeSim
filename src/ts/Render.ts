@@ -1,13 +1,12 @@
 import type { Connector } from "./Connector.js"
 import * as html from "./htmlUtils.js"
-import type { OptionList } from "./Workspace.js"
+import type { FuncList } from "./Workspace.js"
 import { Node } from "./Node.js"
 import { Workspace } from "./Workspace.js"
 import { Menu } from "./Menu.js"
 
 const BUTTONSECTION = document.getElementById("buttonSection")!
 const NODESPACE = document.getElementById("nodeSpace")!
-const FAKEID = "fakeID"
 
 
 // Create/edit html element
@@ -19,16 +18,16 @@ export class Renderer {
         Renderer.updateMenu(ws)
         Renderer.updateConn(ws)
         Renderer.updateNode(ws)
+        console.log(ws.pieceCollection)
     }
 
     static updateMenu(ws:Workspace) {
         BUTTONSECTION.replaceChildren()
-        let optList = Menu.getOption(ws.menu.getInputValue(), ws.optList, ws.pieceCollection)
-        if (optList.length==0){return}
-        
-        // forEach object: create button
-        optList.forEach(opt=>{
-            let b1 = html.createButton(opt.type, opt.func)
+        ws.menu.checkInputValue(ws)
+
+        // forEach function: create button
+        ws.menu.funcList.forEach(func=>{
+            let b1 = html.createButton(func.type, func.func)
             BUTTONSECTION.appendChild(b1)
         })
     }
@@ -48,9 +47,7 @@ export class Renderer {
     }
         
     // static rnode(nodeList:Node[], workspace:Workspace) {
-
     static updateConn(ws:Workspace) {
-
     }
 
     static printLine(id1:string, id2:string) {
@@ -74,14 +71,18 @@ export class Renderer {
         line.setAttribute("stroke-width", "2")
     }
     
-    
-    
-            
     static createNodeDiv(node:Node, ws:Workspace) {
         let nodeDiv = html.createElement("div", node.id)
+        nodeDiv.className = "nodeDiv"
 
         //create button for name
-        let button = html.createButton(node.name!, ()=>{ws.menu.inputBar.value = node.name!; Renderer.updateMenu(ws)})
+        let button = html.createButton(node.name!, ()=>{
+            ws.menu.inputBar.value = node.name!;
+            ws.menu.selectedPiece = node
+            Renderer.updateMenu(ws)
+        })
+
+        button.className = "nameButton"
         nodeDiv.appendChild(button)
         
         return nodeDiv

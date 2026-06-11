@@ -1,7 +1,7 @@
 #body {
     position: relative; /* important: anchor for absolute children */
-    width: auto;
-    height: auto;
+    width: 100vw;
+    height: 100vh;
     margin: 0;
     border: 1px solid #ccc;
 }
@@ -16,6 +16,27 @@
 }
 
 #menuDiv {
-    height: 50px;
-    background-color: aqua;
+    padding: 10px;
+    border: 1px, solid, black;
+    margin: 4px;
+}
+
+#buttonSection {
+    display: inline;
+}
+
+#nodeSpace {
+    height: 400px;
+    border: 1px, solid, black;
+    margin: 4px;
+}
+
+.nodeDiv {
+    height: 100px;
+    width: 100px;
+    border: 1px, solid, black;
+}
+
+.nameButton {
+    margin: 10px;
 }

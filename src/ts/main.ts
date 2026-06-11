@@ -9,27 +9,16 @@ const ws = new Workspace()
 init(ws)
 
 
-ws.createPiece("node", "m1")
-ws.createPiece("node", "m2")
-ws.createPiece("conn", "m2")
-console.log(ws.pieceCollection)
-
-
-// print node on creation
-
 // Give functions to menu buttons
-
-// put id of obj in input if clicked
+// add Conn
 // if obj=conn, can add 2nd conn to input bar for linking
+// Connect 2 conn together
 
-
-
-// ws.checkQ()
 
 
 // Trigger node
 // set conn
 // put next node in Q
+// ws.checkQ()
 
-
-// Menu.getOption() and undefined type logic
+// the option defaults as "newNode" when matchpiece is undefined(to many match byname(ws.getPiece))
