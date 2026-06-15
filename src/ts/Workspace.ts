@@ -30,13 +30,13 @@ export class Workspace {
             if (this.menu.selectedPiece instanceof Node){
                 let conn = this.newConn(this.menu.selectedPiece)
                 if (conn){
-                    this.menu.inputBar.value=conn.name?conn.name:conn.id
                     this.menu.setSelected(conn.id, this)
                 }
             }
             R.renderWS(this)
         }},
         {type:"delNode", func:()=>{
+            if (Array.isArray(this.menu.selectedPiece)){console.log("is an array in \"delNode\"");return}
             this.delPiece(this.menu.selectedPiece)
             this.menu.inputBar.value=""
             this.menu.setSelected("", this)
@@ -54,6 +54,7 @@ export class Workspace {
         }},
         {type:"link", func:()=>{}},
         {type:"delConn", func:()=>{
+            if (Array.isArray(this.menu.selectedPiece)){console.log("is an array in \"delConn\"");return}
             this.delPiece(this.menu.selectedPiece)
             this.menu.inputBar.value=""
             this.menu.setSelected("", this)
@@ -94,7 +95,8 @@ export class Workspace {
         if (!piece){console.log("no piece to del from delPiece()");return}
         if (piece instanceof Node) {
             piece.connectors.forEach(conn=>{
-                this.delPiece(conn)
+                let indx3 = this.pieceCollection.findIndex(c=>c==conn)
+                this.pieceCollection.splice(indx3, 1)
             })
         }
         if (piece instanceof Connector) {
@@ -107,7 +109,8 @@ export class Workspace {
         
         // del mentioned piece from pc
         let indx1 = this.pieceCollection.findIndex(p=>p==piece)
-        let fo = this.pieceCollection.splice(indx1, 1)
+        this.pieceCollection.splice(indx1, 1)
+        console.log("delPiece "+piece?.id)
     }
 
     //add in pieceCollection and in node.connectors

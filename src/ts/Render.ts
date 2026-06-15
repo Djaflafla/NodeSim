@@ -53,7 +53,6 @@ export class Renderer {
         
         //create button for name
         let button = html.createButton(node.name!, ()=>{
-            ws.menu.inputBar.value = node.name!;
             ws.menu.setSelected(node.id, ws)
             Renderer.updateMenu(ws)
         })
@@ -64,7 +63,6 @@ export class Renderer {
         let connSection = html.createElement("div")
         node.connectors.forEach(conn=>{
             let b1 = html.createButton(TEXTFORCONN, ()=>{
-                ws.menu.inputBar.value = conn.name!;
                 ws.menu.setSelected(conn.id, ws)
             Renderer.updateMenu(ws)
             })
