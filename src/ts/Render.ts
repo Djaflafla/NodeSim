@@ -11,21 +11,19 @@ export class Renderer {
     
     static renderWS(ws:Workspace){
         Renderer.updateMenu(ws)
-        Renderer.updateConn(ws)
         Renderer.updateNode(ws)
+        Renderer.updateConn(ws)
         console.log(ws.pieceCollection)
     }
 
     static updateMenu(ws:Workspace) {
         BUTTONSECTION.replaceChildren()
         // setFuncList if know value
-        let funcList = ws.menu.checkInputValue(ws)
-        Menu.setFuncList(funcList, ws)
 
 
         // forEach function: create button
-        ws.menu.funcList.forEach(func=>{
-            let b1 = html.createButton(func.type, func.func)
+        ws.menu.optList.forEach(opt=>{
+            let b1 = html.createButton(opt, ()=>{ws.doOpt(opt)})
             BUTTONSECTION.appendChild(b1)
         })
     }
@@ -56,7 +54,7 @@ export class Renderer {
         //create button for name
         let button = html.createButton(node.name!, ()=>{
             ws.menu.inputBar.value = node.name!;
-            ws.menu.selectedPiece = node
+            ws.menu.setSelected(node.id, ws)
             Renderer.updateMenu(ws)
         })
         button.className = "nameButton"
@@ -67,7 +65,7 @@ export class Renderer {
         node.connectors.forEach(conn=>{
             let b1 = html.createButton(TEXTFORCONN, ()=>{
                 ws.menu.inputBar.value = conn.name!;
-                ws.menu.selectedPiece = conn
+                ws.menu.setSelected(conn.id, ws)
             Renderer.updateMenu(ws)
             })
             connSection.appendChild(b1)

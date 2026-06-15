@@ -1,4 +1,5 @@
-import type { Piece } from "./Piece.js";
+import type { Connector } from "./Connector.js";
+import { Piece } from "./Piece.js";
 import type {FuncList} from "./Workspace.js"
 import type { Workspace } from "./Workspace.js";
 
@@ -9,30 +10,25 @@ const BASICOPTION = ["newNode"]
 export class Menu {
     inputBar= INBAR;
     lastValue:string = ""
-    pieceCollection:Piece[] = []
-    funcList:FuncList = []
-    selectedPiece:Piece|undefined
+    // pieceCollection:Piece[] = []
+    optList:string[] = []
+    selectedPiece: Piece |undefined 
 
+    // 
+    setSelected(pieceId:string, ws:Workspace) {
+        this.optList= []
+    
+        let p = ws.getPiece(pieceId)
+        if (!p) {
+            this.selectedPiece=undefined;
+            pieceId==""?this.optList=[]:this.optList= ["newNode"]
+            return
+        }
+        this.selectedPiece=p
+        this.optList=p.option
+    }
 
     getInputVal () {
         return INBAR.value
     }
-    checkInputValue (ws:Workspace) {
-        let input=this.getInputVal()
-        let knownP = ws.getPiece(this.selectedPiece?this.selectedPiece.id:input)
-
-        return input==""?[]:knownP?knownP.option:BASICOPTION
-    }
-
-    static setFuncList (opt:string[], ws:Workspace){
-        ws.menu.funcList=[]
-    
-        if (opt.length==0){return}
-
-        opt.forEach(optType=>{
-            let funcObj = ws.funcForOption.find(func => func.type == optType)
-            if (funcObj){ws.menu.funcList.push(funcObj)}
-        })
-    }
-
 }

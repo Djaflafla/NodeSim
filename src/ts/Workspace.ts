@@ -9,7 +9,7 @@ export type FuncList = {
     func:()=>void
 }[]
 
-type CreatePiece=(type:"node"|"conn", name:string|undefined, func?:()=>void)=> Piece
+type CreatePiece=(type:"node"|"conn", name:string|undefined, func?:()=>void)=> Node|Connector
 
 const POSSPIECE = [
     {type:"node", cstr:Node},
@@ -22,32 +22,51 @@ const FakeID = "in1"
 export class Workspace {
     idList:string[] = []
     Q:Piece[]=[]
-    pieceCollection:Piece[] = []
+    pieceCollection:(Node | Connector)[] = []
     menu=new Menu()
     funcForOption = [
         {type:"edit", func:()=>{}},
-        {type:"addConn", func:()=>{
-            this.addConn(this.getPiece(this.menu.getInputVal()))
+        {type:"newConn", func:()=>{
+            if (this.menu.selectedPiece instanceof Node){
+                let conn = this.newConn(this.menu.selectedPiece)
+                if (conn){
+                    this.menu.inputBar.value=conn.name?conn.name:conn.id
+                    this.menu.setSelected(conn.id, this)
+                }
+            }
             R.renderWS(this)
         }},
         {type:"delNode", func:()=>{
             this.delPiece(this.menu.selectedPiece)
+            this.menu.inputBar.value=""
+            this.menu.setSelected("", this)
             R.renderWS(this)
-
+            
         }},
         {type:"newNode", func:()=>{
             // create node with inputvalue as name
-            this.createPiece("node", this.menu.getInputVal())
+            let node = this.createPiece("node", this.menu.getInputVal())
+            if (node){
+                this.menu.setSelected(node.id, this)
+            }
             R.renderWS(this)
 
         }},
         {type:"link", func:()=>{}},
         {type:"delConn", func:()=>{
+            this.delPiece(this.menu.selectedPiece)
+            this.menu.inputBar.value=""
+            this.menu.setSelected("", this)
+            R.renderWS(this)
             // delete from  pC and from conn
         }}
     ]
 
 
+    doOpt(opt:string){
+        let funcObj = this.funcForOption.find(obj=>obj.type== opt)
+        funcObj?.func()
+    }
 
     
     checkQ () {
@@ -71,11 +90,9 @@ export class Workspace {
 
     // delete node and its connectors from pieceCollection
     // delete Conn from pieceCollection and from node.connectors
-    delPiece (piece:Node|Connector|Piece|undefined) {
-        if (!piece){return}
-        let indx = this.pieceCollection.findIndex(p=>p==piece)
-        this.pieceCollection.splice(indx, 1)
-        if (piece instanceof Node && piece.connectors.length>0) {
+    delPiece (piece:Piece|undefined) {
+        if (!piece){console.log("no piece to del from delPiece()");return}
+        if (piece instanceof Node) {
             piece.connectors.forEach(conn=>{
                 this.delPiece(conn)
             })
@@ -85,27 +102,26 @@ export class Workspace {
             // del conn from node.connector
             let node = piece.node
             let indx = node.connectors.findIndex(conn=>conn==piece)
-            node.connectors.slice(indx, 1)
+            node.connectors.splice(indx, 1)
         }
-        // del mentioned piece from pc
-        let indx1 = this.pieceCollection.findIndex(p=>p=piece)
-        this.pieceCollection.slice(indx1, 1)
-
-        if (!piece) {console.log("no piece to delete");return}
-        this.menu.selectedPiece=undefined
-        Renderer.renderWS(this)
         
+        // del mentioned piece from pc
+        let indx1 = this.pieceCollection.findIndex(p=>p==piece)
+        let fo = this.pieceCollection.splice(indx1, 1)
     }
 
     //add in pieceCollection and in node.connectors
-    addConn(piece:Piece|undefined){
-        if (piece instanceof Node) {
-            let newConn = this.createPiece("conn", piece.connectors.length.toString())
+    newConn(node:Node|undefined){
+        if (!node){return}
+        let newConn = this.createPiece("conn", node.connectors.length.toString())
+
+        if (!(newConn instanceof Connector)){return}
+        node.connectors.push(newConn)
             if (newConn instanceof Connector){
-                piece.connectors.push(newConn)
-                newConn.node = piece
+                newConn.node = node
             }
-        }
+        
+        return newConn
     }
 
     // Return piece of pieceCollection by searching id first then name
@@ -115,7 +131,7 @@ export class Workspace {
         //check by id first (id is more precise bc of uuid)
         let byid = this.pieceCollection.find(piece=>piece.id==value)
 
-        let found:Piece[] = []
+        let found:(Node | Connector)[]= []
         let byname = undefined
         this.pieceCollection.forEach(piece=>{
             if (piece.name==value) {
@@ -126,6 +142,7 @@ export class Workspace {
         if (found.length>1) {console.log("multiple pieces with this name")}
 
         // console.log(`${found.length} is found Len`)
+        // console.log(byid?byid:byname)
         return byid?byid:byname
     }
 
