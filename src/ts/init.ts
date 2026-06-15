@@ -1,4 +1,3 @@
-import { Menu } from "./Menu.js"
 import { Renderer } from "./Render.js"
 import type { Workspace } from "./Workspace.js"
 

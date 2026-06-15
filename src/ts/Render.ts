@@ -1,16 +1,11 @@
-import type { Connector } from "./Connector.js"
 import * as html from "./htmlUtils.js"
-import type { FuncList } from "./Workspace.js"
 import { Node } from "./Node.js"
-import { Workspace } from "./Workspace.js"
 import { Menu } from "./Menu.js"
+import { Workspace } from "./Workspace.js"
 
 const BUTTONSECTION = document.getElementById("buttonSection")!
 const NODESPACE = document.getElementById("nodeSpace")!
-
-
-// Create/edit html element
-// Print wtv on screen
+const TEXTFORCONN = "∆"
 
 export class Renderer {
     
@@ -23,7 +18,10 @@ export class Renderer {
 
     static updateMenu(ws:Workspace) {
         BUTTONSECTION.replaceChildren()
-        ws.menu.checkInputValue(ws)
+        // setFuncList if know value
+        let funcList = ws.menu.checkInputValue(ws)
+        Menu.setFuncList(funcList, ws)
+
 
         // forEach function: create button
         ws.menu.funcList.forEach(func=>{
@@ -46,10 +44,40 @@ export class Renderer {
 
     }
         
-    // static rnode(nodeList:Node[], workspace:Workspace) {
     static updateConn(ws:Workspace) {
     }
 
+    
+    static createNodeDiv(node:Node, ws:Workspace) {
+        // Create div to return
+        let nodeDiv = html.createElement("div", node.id)
+        nodeDiv.className = "nodeDiv"
+        
+        //create button for name
+        let button = html.createButton(node.name!, ()=>{
+            ws.menu.inputBar.value = node.name!;
+            ws.menu.selectedPiece = node
+            Renderer.updateMenu(ws)
+        })
+        button.className = "nameButton"
+
+        
+        //create button for conn
+        let connSection = html.createElement("div")
+        node.connectors.forEach(conn=>{
+            let b1 = html.createButton(TEXTFORCONN, ()=>{
+                ws.menu.inputBar.value = conn.name!;
+                ws.menu.selectedPiece = conn
+            Renderer.updateMenu(ws)
+            })
+            connSection.appendChild(b1)
+        })
+        nodeDiv.appendChild(button)
+        nodeDiv.appendChild(connSection)
+        
+        return nodeDiv
+    }
+    
     static printLine(id1:string, id2:string) {
         // get but1 pos
         let but1Pos = html.getButton(id1)?.getBoundingClientRect()
@@ -70,43 +98,4 @@ export class Renderer {
         line.setAttribute("stroke", "black")
         line.setAttribute("stroke-width", "2")
     }
-    
-    static createNodeDiv(node:Node, ws:Workspace) {
-        let nodeDiv = html.createElement("div", node.id)
-        nodeDiv.className = "nodeDiv"
-
-        //create button for name
-        let button = html.createButton(node.name!, ()=>{
-            ws.menu.inputBar.value = node.name!;
-            ws.menu.selectedPiece = node
-            Renderer.updateMenu(ws)
-        })
-
-        button.className = "nameButton"
-        nodeDiv.appendChild(button)
-        
-        return nodeDiv
-    }
-
-        // // create a button for every conn and print value
-        // node.connectors.forEach((conn, i) => {
-        //     let button = html.createButton(
-        //         conn.id,
-        //         conn.value,
-        //         () => {
-        //             workspace.toLink(conn.id);
-        //         }
-        //     );
-        //     nodeDiv.appendChild(button)
-        // });
-
-    
-
-    
-
 }
-
-
-
-
-

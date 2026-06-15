@@ -8,12 +8,15 @@ import { Connector } from "./Connector.js"
 const ws = new Workspace()
 init(ws)
 
+// del piece
+//  funcForOption
 
 // Give functions to menu buttons
-// add Conn
 // if obj=conn, can add 2nd conn to input bar for linking
 // Connect 2 conn together
 
+// cannot del conn if 2 conn have the same name. even with diff id
+// ^^ because i dont even have the function yet...
 
 
 // Trigger node

@@ -1,6 +1,3 @@
-import { Connector } from "./Connector.js"
-import { Node } from "./Node.js"
-
 export class Piece {
     name:string | undefined
     type:string

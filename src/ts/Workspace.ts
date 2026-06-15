@@ -1,6 +1,6 @@
 import { Connector } from "./Connector.js"
 import { Node } from "./Node.js"
-import {Renderer as R} from "./Render.js"
+import {Renderer as R, Renderer} from "./Render.js"
 import { Piece } from "./Piece.js"
 import { Menu } from "./Menu.js"
 
@@ -9,12 +9,14 @@ export type FuncList = {
     func:()=>void
 }[]
 
-type CreatePiece=(type:"node"|"conn", name:string, func?:()=>void)=> Piece
+type CreatePiece=(type:"node"|"conn", name:string|undefined, func?:()=>void)=> Piece
 
 const POSSPIECE = [
     {type:"node", cstr:Node},
     {type:"conn", cstr:Connector}
 ]
+
+const FakeID = "in1"
 
 
 export class Workspace {
@@ -24,18 +26,30 @@ export class Workspace {
     menu=new Menu()
     funcForOption = [
         {type:"edit", func:()=>{}},
-        {type:"addConn", func:()=>{}},
+        {type:"addConn", func:()=>{
+            this.addConn(this.getPiece(this.menu.getInputVal()))
+            R.renderWS(this)
+        }},
         {type:"delNode", func:()=>{
-            this.delPiece(this.getPiece(this.menu.getInputVal()))
+            this.delPiece(this.menu.selectedPiece)
+            R.renderWS(this)
+
         }},
         {type:"newNode", func:()=>{
             // create node with inputvalue as name
             this.createPiece("node", this.menu.getInputVal())
+            R.renderWS(this)
+
         }},
         {type:"link", func:()=>{}},
-        {type:"delConn", func:()=>{}}
+        {type:"delConn", func:()=>{
+            // delete from  pC and from conn
+        }}
     ]
 
+
+
+    
     checkQ () {
         // if Node in Q, run it
 
@@ -46,21 +60,53 @@ export class Workspace {
     }
 
     // Create a piece and push to pieceCollection
-    // Render when finished
     createPiece: CreatePiece=(type, name, func=()=>{})=>{
         let id = crypto.randomUUID().slice(32)
         let piece = POSSPIECE.find(obj=>obj.type === type)!
         let newP = new piece.cstr(id, func, name)
-
         this.pieceCollection.push(newP)
-        // console.log(this.pieceCollection)
-        // console.log("^^^in createPiece^^^")
-        R.renderWS(this)
-
         return newP
         
     }
 
+    // delete node and its connectors from pieceCollection
+    // delete Conn from pieceCollection and from node.connectors
+    delPiece (piece:Node|Connector|Piece|undefined) {
+        if (!piece){return}
+        let indx = this.pieceCollection.findIndex(p=>p==piece)
+        this.pieceCollection.splice(indx, 1)
+        if (piece instanceof Node && piece.connectors.length>0) {
+            piece.connectors.forEach(conn=>{
+                this.delPiece(conn)
+            })
+        }
+        if (piece instanceof Connector) {
+            
+            // del conn from node.connector
+            let node = piece.node
+            let indx = node.connectors.findIndex(conn=>conn==piece)
+            node.connectors.slice(indx, 1)
+        }
+        // del mentioned piece from pc
+        let indx1 = this.pieceCollection.findIndex(p=>p=piece)
+        this.pieceCollection.slice(indx1, 1)
+
+        if (!piece) {console.log("no piece to delete");return}
+        this.menu.selectedPiece=undefined
+        Renderer.renderWS(this)
+        
+    }
+
+    //add in pieceCollection and in node.connectors
+    addConn(piece:Piece|undefined){
+        if (piece instanceof Node) {
+            let newConn = this.createPiece("conn", piece.connectors.length.toString())
+            if (newConn instanceof Connector){
+                piece.connectors.push(newConn)
+                newConn.node = piece
+            }
+        }
+    }
 
     // Return piece of pieceCollection by searching id first then name
     // return undefined if no match or multiple match
@@ -81,20 +127,7 @@ export class Workspace {
 
         // console.log(`${found.length} is found Len`)
         return byid?byid:byname
-        
     }
-
-    delPiece (piece:Node|Connector|Piece|undefined) {
-        if (!piece) {console.log("no piece to delete")}
-        let indx = this.pieceCollection.findIndex(p=>p==piece)
-        this.pieceCollection.splice(indx, 1)
-        // console.log(this.pieceCollection)
-        // console.log("^^^in delPiece^^^")
-        this.menu.selectedPiece=undefined
-        R.renderWS(this)
-        
-    }
-
 
     // toLink (connID:string) {
     //     if (this.connToLink.length>1) {
@@ -102,17 +135,6 @@ export class Workspace {
     //     }
     //     this.connToLink.push(connID)
     //     R.renderToLink(this)
-    // }
-
-    // addConn(node:Node){
-    //     let newConn = this.createPiece("conn")
-    //     if (!newConn) {return}
-    //     if (newConn !== typeof Connector) {return}
-
-    //     node.connectors.push(newConn)
-    //     this.connToNode.push([newConn.id, node.id])
-    //     R.rnode(this.nodeList, this)
-    //     return newConn
     // }
 
 

@@ -1,9 +1,11 @@
-import { Connector } from "./Connector.js";
+import type { Connector } from "./Connector.js";
 import { Piece } from "./Piece.js";
+
+const NODEOPTION = ["edit", "addConn", "delNode"]
 export class Node extends Piece {
     connectors: Connector[] = []
     type = "node"
-    option = ["edit", "addConn", "delNode"]
+    option = NODEOPTION
 
     constructor (id:string, func:()=>void, name?:string) {
         super(id, func, name)
