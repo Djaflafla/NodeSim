@@ -6,10 +6,11 @@ export class Connector extends Piece{
     value:string = ""
     option = CONNOPTION
     type = "connector"
-    node:Node = new Node("",()=>{})
+    node:Node
 
-    constructor (id:string, func:()=>void, name?:string) {
-        super(id, func, name)
+    constructor (id:string, node:Node, name?:string) {
+        super(id, name)
+        this.node = node
     }
 
 }

@@ -3,66 +3,76 @@ import { Node } from "./Node.js"
 import {Renderer as R, Renderer} from "./Render.js"
 import { Piece } from "./Piece.js"
 import { Menu } from "./Menu.js"
+import { NodeFunction as nf} from "./NodeFunction.js" 
+
 
 export type FuncList = {
     type:string, 
     func:()=>void
 }[]
 
-type CreatePiece=(type:"node"|"conn", name:string|undefined, func?:()=>void)=> Node|Connector
 
-const POSSPIECE = [
-    {type:"node", cstr:Node},
-    {type:"conn", cstr:Connector}
-]
-
-const FakeID = "in1"
+const POSSNODE = ["and", "or", "not", "input", "wire", "node"]
 
 
 export class Workspace {
     idList:string[] = []
-    Q:Piece[]=[]
+    Q:(Node|Connector)[]=[]
     pieceCollection:(Node | Connector)[] = []
     menu=new Menu()
     funcForOption = [
-        {type:"edit", func:()=>{}},
+        {type:"newNode", func:()=>{
+            let input = this.menu.getInputVal()
+            let known = POSSNODE.find(str=>str==input)
+
+            let node = Piece.createNode(this, known?known:"node", input)
+            this.pieceCollection.push(node)
+            this.menu.setSelected(node.id, this)
+            R.renderWS(this)
+
+        }},
+
+
         {type:"newConn", func:()=>{
-            if (this.menu.selectedPiece instanceof Node){
-                let conn = this.newConn(this.menu.selectedPiece)
-                if (conn){
-                    this.menu.setSelected(conn.id, this)
-                }
-            }
+        let sp = this.menu.selectedPiece
+            if (!(sp instanceof Node)){console.log("seleceted piece is not a node in newConn");return}
+            sp.addConn(this)
+            console.log("hello")
+
+            // put new conn in selectedPiece
+            // if (newConn){this.menu.setSelected(conn.id, this)}
+
             R.renderWS(this)
         }},
+
+        
         {type:"delNode", func:()=>{
             if (Array.isArray(this.menu.selectedPiece)){console.log("is an array in \"delNode\"");return}
-            this.delPiece(this.menu.selectedPiece)
+            if (!this.menu.selectedPiece){return}
+            Piece.delPiece(this.menu.selectedPiece, this)
             this.menu.inputBar.value=""
             this.menu.setSelected("", this)
             R.renderWS(this)
             
         }},
-        {type:"newNode", func:()=>{
-            // create node with inputvalue as name
-            let node = this.createPiece("node", this.menu.getInputVal())
-            if (node){
-                this.menu.setSelected(node.id, this)
-            }
-            R.renderWS(this)
 
-        }},
-        {type:"link", func:()=>{}},
+
         {type:"delConn", func:()=>{
             if (Array.isArray(this.menu.selectedPiece)){console.log("is an array in \"delConn\"");return}
-            this.delPiece(this.menu.selectedPiece)
+            if (!this.menu.selectedPiece){return}
+            Piece.delPiece(this.menu.selectedPiece, this)
             this.menu.inputBar.value=""
             this.menu.setSelected("", this)
             R.renderWS(this)
             // delete from  pC and from conn
-        }}
+        }},
+
+
+        {type:"edit", func:()=>{}},
+        {type:"link", func:()=>{}},
     ]
 
+   
 
     doOpt(opt:string){
         let funcObj = this.funcForOption.find(obj=>obj.type== opt)
@@ -72,59 +82,11 @@ export class Workspace {
     
     checkQ () {
         // if Node in Q, run it
+        let next = this.Q[0]
+        if (!next || !(next instanceof Node)) {return}
 
-        if (!this.Q[0] ) {return}
-
-        this.Q[0].run()
+        next.run(next)
         this.Q.shift()
-    }
-
-    // Create a piece and push to pieceCollection
-    createPiece: CreatePiece=(type, name, func=()=>{})=>{
-        let id = crypto.randomUUID().slice(32)
-        let piece = POSSPIECE.find(obj=>obj.type === type)!
-        let newP = new piece.cstr(id, func, name)
-        this.pieceCollection.push(newP)
-        return newP
-        
-    }
-
-    // delete node and its connectors from pieceCollection
-    // delete Conn from pieceCollection and from node.connectors
-    delPiece (piece:Piece|undefined) {
-        if (!piece){console.log("no piece to del from delPiece()");return}
-        if (piece instanceof Node) {
-            piece.connectors.forEach(conn=>{
-                let indx3 = this.pieceCollection.findIndex(c=>c==conn)
-                this.pieceCollection.splice(indx3, 1)
-            })
-        }
-        if (piece instanceof Connector) {
-            
-            // del conn from node.connector
-            let node = piece.node
-            let indx = node.connectors.findIndex(conn=>conn==piece)
-            node.connectors.splice(indx, 1)
-        }
-        
-        // del mentioned piece from pc
-        let indx1 = this.pieceCollection.findIndex(p=>p==piece)
-        this.pieceCollection.splice(indx1, 1)
-        console.log("delPiece "+piece?.id)
-    }
-
-    //add in pieceCollection and in node.connectors
-    newConn(node:Node|undefined){
-        if (!node){return}
-        let newConn = this.createPiece("conn", node.connectors.length.toString())
-
-        if (!(newConn instanceof Connector)){return}
-        node.connectors.push(newConn)
-            if (newConn instanceof Connector){
-                newConn.node = node
-            }
-        
-        return newConn
     }
 
     // Return piece of pieceCollection by searching id first then name
@@ -148,21 +110,4 @@ export class Workspace {
         // console.log(byid?byid:byname)
         return byid?byid:byname
     }
-
-    // toLink (connID:string) {
-    //     if (this.connToLink.length>1) {
-    //         this.connToLink.shift()
-    //     }
-    //     this.connToLink.push(connID)
-    //     R.renderToLink(this)
-    // }
-
-
-    // link() {
-    //     if (!this.connToLink[0] || !this.connToLink[1]){return}
-
-    //     this.connection.push(this.connToLink)
-    //     R.printLine(this.connToLink[0], this.connToLink[1])
-    //     console.log(`connected conns ${this.connToLink[0]} and ${this.connToLink[1]}`)
-    // }
 }

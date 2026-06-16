@@ -8,16 +8,12 @@ import { Connector } from "./Connector.js"
 const ws = new Workspace()
 init(ws)
 
-// link
-//  funcForOption
 
-// if obj=conn, can add 2nd conn to input bar for linking
-// Connect 2 conn together
+// GIVE FUNC TO NODE
+// and, or, input
 
-//getPiece() with multiple found names(or id)
+// LINK
 
-
-// Trigger node
 // set conn
 // put next node in Q
 // ws.checkQ()
