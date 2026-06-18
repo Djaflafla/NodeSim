@@ -1,31 +1,30 @@
 import { Connector } from "./Connector.js"
-import { Node } from "./Node.js"
+import { Node, POSSNODE } from "./Node.js"
+import type { nodeType } from "./Node.js"
 import {Renderer as R, Renderer} from "./Render.js"
-import { Piece } from "./Piece.js"
 import { Menu } from "./Menu.js"
 import { NodeFunction as nf} from "./NodeFunction.js" 
 
 
-export type FuncList = {
-    type:string, 
+export type FuncMap = {
+    type:nodeType, 
     func:()=>void
 }[]
+export type Piece = Node|Connector
 
-
-const POSSNODE = ["and", "or", "not", "input", "wire", "node"]
 
 
 export class Workspace {
     idList:string[] = []
-    Q:(Node|Connector)[]=[]
-    pieceCollection:(Node | Connector)[] = []
+    Q:(Piece)[]=[]
+    pieceCollection:(Piece)[] = []
     menu=new Menu()
     funcForOption = [
         {type:"newNode", func:()=>{
             let input = this.menu.getInputVal()
             let known = POSSNODE.find(str=>str==input)
 
-            let node = Piece.createNode(this, known?known:"node", input)
+            let node = Node.createNode(this, known?known:"node", input)
             this.pieceCollection.push(node)
             this.menu.setSelected(node.id, this)
             R.renderWS(this)
@@ -37,7 +36,7 @@ export class Workspace {
         let sp = this.menu.selectedPiece
             if (!(sp instanceof Node)){console.log("seleceted piece is not a node in newConn");return}
             sp.addConn(this)
-            console.log("hello")
+
 
             // put new conn in selectedPiece
             // if (newConn){this.menu.setSelected(conn.id, this)}
@@ -49,7 +48,7 @@ export class Workspace {
         {type:"delNode", func:()=>{
             if (Array.isArray(this.menu.selectedPiece)){console.log("is an array in \"delNode\"");return}
             if (!this.menu.selectedPiece){return}
-            Piece.delPiece(this.menu.selectedPiece, this)
+            Node.delPiece(this.menu.selectedPiece, this)
             this.menu.inputBar.value=""
             this.menu.setSelected("", this)
             R.renderWS(this)
@@ -60,7 +59,7 @@ export class Workspace {
         {type:"delConn", func:()=>{
             if (Array.isArray(this.menu.selectedPiece)){console.log("is an array in \"delConn\"");return}
             if (!this.menu.selectedPiece){return}
-            Piece.delPiece(this.menu.selectedPiece, this)
+            Node.delPiece(this.menu.selectedPiece, this)
             this.menu.inputBar.value=""
             this.menu.setSelected("", this)
             R.renderWS(this)
@@ -91,12 +90,12 @@ export class Workspace {
 
     // Return piece of pieceCollection by searching id first then name
     // return undefined if no match or multiple match
-    getPiece:(value:string)=>Piece|undefined = (value) => {
+    getPiece:(value:string)=>Piece | undefined = (value) => {
 
         //check by id first (id is more precise bc of uuid)
         let byid = this.pieceCollection.find(piece=>piece.id==value)
 
-        let found:(Node | Connector)[]= []
+        let found:(Piece)[]= []
         let byname = undefined
         this.pieceCollection.forEach(piece=>{
             if (piece.name==value) {

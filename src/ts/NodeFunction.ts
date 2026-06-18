@@ -1,4 +1,4 @@
-import type { Node } from "./Node.js"
+import { Node } from "./Node.js"
 
 // const POSSNODE = ["and", "or", "not", "input", "wire"]
 export class NodeFunction {
@@ -9,31 +9,45 @@ export class NodeFunction {
 
             let a = node.connectors[0]
             let b = node.connectors[1]
+            let c = node.connectors[2]
+            if (!a || !b || !c){console.log("missing conn for andFunc"); return}
 
-            if (a?.value == "1" && b?.value == "1"){
-                node.connectors[2]?node.connectors[2].value = "1":console.log("\"and\" function in funcForPiece")
-            } else {node.connectors[2]?node.connectors[2].value = "0":console.log("\"and\" function in funcForPiece")}
+            if (a.value == "1" && b.value == "1"){
+               c.value = "1"
+            } else {
+                c.value = "0"
+            }
+        }},
+        
+        
+        {type:"or", func:(node)=>{
+            let a = node.connectors[0]
+            let b = node.connectors[1]
+            let c = node.connectors[2]
+            if (!a || !b || !c){console.log("missing conn for andFunc"); return}
+    
+            if (a.value == "1" || b.value == "1"){
+               c.value = "1"
+            } else {
+                c.value = "0"
+            }
+        }},
+        
+        
+        {type:"not", func:(node)=>{
+            let a = node.connectors[0]
+            let b = node.connectors[1]
+            if (!a || !b ){console.log("missing conn for andFunc"); return}
+    
+            a.value == "1"?b.value="0":b.value="1"
         }},
 
 
-        {type:"or", func:()=>{
-            // Read input 1
-            // Read input 2
-            // Logic
-            // Set output a
-        }},
-
-
-        {type:"not", func:()=>{
-            // Read input 1
-            // Logic
-            // Set output a
-        }},
-
-
-        {type:"input", func:()=>{
-            // Read inputbar
-            // set output a
+        {type:"input", func:(node)=>{
+            // if (node.type=="input"){return}
+            let a = node.connectors[0]
+            if (!a || !node.inputValue ){return}
+            a.value = node.inputValue
         }},
 
 

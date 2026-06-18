@@ -1,10 +1,9 @@
 import { Connector } from "./Connector.js";
-import { Piece } from "./Piece.js";
-import type {FuncList} from "./Workspace.js"
+import { Node } from "./Node.js";
+import type {FuncMap} from "./Workspace.js"
 import type { Workspace } from "./Workspace.js";
 
 const INBAR = document.getElementById("userInput") as HTMLInputElement  // input bar Element
-const BASICOPTION = ["newNode"]
 
 
 export class Menu {
@@ -12,7 +11,7 @@ export class Menu {
     lastValue:string = ""
     // pieceCollection:Piece[] = []
     optList:string[] = []
-    selectedPiece: Piece |Connector[]|undefined 
+    selectedPiece: Node | Connector | Connector[] | undefined 
 
 
 
@@ -20,7 +19,7 @@ export class Menu {
     setSelected(pieceId:string, ws:Workspace) {
         this.optList= []
     
-        let p = ws.getPiece(pieceId)
+        let p:Node|Connector|undefined = ws.getPiece(pieceId)
         if (!p) {
             this.selectedPiece=undefined;
             pieceId==""?this.optList=[]:this.optList= ["newNode"]

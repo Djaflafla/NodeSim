@@ -1,16 +1,18 @@
 import { Node } from "./Node.js";
-import { Piece } from "./Piece.js";
 
 const CONNOPTION = ["link", "delConn"]
-export class Connector extends Piece{
+export class Connector {
+    id:string
+    type = "conn"
     value:string = ""
     option = CONNOPTION
-    type = "connector"
     node:Node
+    name:string | undefined
 
     constructor (id:string, node:Node, name?:string) {
-        super(id, name)
+        this.id = id
         this.node = node
+        this.name = name
     }
 
 }
