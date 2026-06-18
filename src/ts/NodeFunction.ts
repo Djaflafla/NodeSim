@@ -3,7 +3,7 @@ import { Node } from "./Node.js"
 // const POSSNODE = ["and", "or", "not", "input", "wire"]
 export class NodeFunction {
     static funcForNode:{type:string, func:(node:Node)=>void}[] = [
-        {type:"node", func:()=>{}},
+        {type:"node", func:(node)=>{}},
 
         {type:"and", func:(node)=>{
 
@@ -44,14 +44,13 @@ export class NodeFunction {
 
 
         {type:"input", func:(node)=>{
-            // if (node.type=="input"){return}
             let a = node.connectors[0]
             if (!a || !node.inputValue ){return}
             a.value = node.inputValue
         }},
 
 
-        {type:"wire", func:()=>{
+        {type:"wire", func:(node)=>{
             // output a = input 1
         }},
 

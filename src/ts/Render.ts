@@ -57,6 +57,17 @@ export class Renderer {
             Renderer.updateMenu(ws)
         })
         button.className = "nameButton"
+        nodeDiv.appendChild(button)
+
+        // add input bar if type=input
+        if (node.type == "input"){
+            let btn = html.createButton("set", ()=>{node.setInputValue()} )
+            nodeDiv.appendChild(btn)
+            let inBar = html.createElement("input",(node.id+"input")) as HTMLInputElement
+            node.inputBar = inBar
+            inBar.className = "nodeInput"
+            nodeDiv.appendChild(inBar)
+        }
 
         
         //create button for conn
@@ -68,7 +79,6 @@ export class Renderer {
             })
             connSection.appendChild(b1)
         })
-        nodeDiv.appendChild(button)
         nodeDiv.appendChild(connSection)
         
         return nodeDiv

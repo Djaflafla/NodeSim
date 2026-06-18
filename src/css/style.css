@@ -40,3 +40,7 @@
 .nameButton {
     margin: 10px;
 }
+
+.nodeInput {
+    width: 80px;
+}

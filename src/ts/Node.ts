@@ -26,7 +26,6 @@ export class Node {
         this.type = type
         this.run = func
         this.name = name
-        if (type == "input"){this.inputBar = document.getElementById(FAKEHTMLID) as HTMLInputElement}
     }
 
     // create piece. add Conn, give Func, give ID

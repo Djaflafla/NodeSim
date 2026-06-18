@@ -1,5 +1,6 @@
 import { Renderer } from "./Render.js"
 import type { Workspace } from "./Workspace.js"
+import { Node } from "./Node.js"
 
 export function init(ws:Workspace){
 
@@ -9,5 +10,15 @@ export function init(ws:Workspace){
         Renderer.updateMenu(ws)
 
     }):console.log("no input bar")
+
+
+    const clockBut = document.getElementById("clock")
+    clockBut?.addEventListener("click", ()=>{
+        console.log(ws.pieceCollection)
+        ws.pieceCollection.forEach(piece=>{
+            if (!(piece instanceof Node)) {return}
+            piece.run(piece)
+        })
+        })
 
 }

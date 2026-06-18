@@ -79,14 +79,14 @@ export class Workspace {
     }
 
     
-    checkQ () {
-        // if Node in Q, run it
-        let next = this.Q[0]
-        if (!next || !(next instanceof Node)) {return}
+    // checkQ () {
+    //     // if Node in Q, run it
+    //     let next = this.Q[0]
+    //     if (!next || !(next instanceof Node)) {return}
 
-        next.run(next)
-        this.Q.shift()
-    }
+    //     next.run(next)
+    //     this.Q.shift()
+    // }
 
     // Return piece of pieceCollection by searching id first then name
     // return undefined if no match or multiple match
