@@ -48,10 +48,19 @@ export class NodeFunction {
             if (!a || !node.inputValue ){return}
             a.value = node.inputValue
         }},
-
+        
+        {type:"output", func:(node)=>{
+            let a = node.connectors[0]
+            if (!a){return}
+            if (node.outputP) {node.outputP.textContent = `output: ${a.value}`}
+        }},
 
         {type:"wire", func:(node)=>{
-            // output a = input 1
+            if (node.connectors[0]&&node.connectors[1]){
+                node.connectors[1].value = node.connectors[0].value
+            }
+
+
         }},
 
     ]

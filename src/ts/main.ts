@@ -11,23 +11,21 @@ const ws = new Workspace()
 init(ws)
 
 
+// shit is broken
+// working on deleting a connector
+// include multiple connector that are connected to. 
 
 
 
+// input connectors are giving "na value" to output conn. should be the other way around
+// disconect when connection to another con. contectedTo should be an array
 
-//LAST
-// NodeFunction
-// create node, create conn. used Piece and Node Files
-// selectedPiece
-// deleted class Piece
-// create an input element
-// /create clock button
+// how to really remove data from mem
 
+// conn delete
+// spreadvalue
 
-// LINK
-
-
-
+// look who has conn in their connectedto. then delete
 
 
 // disable new conn on preset?

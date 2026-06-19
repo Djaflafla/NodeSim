@@ -1,6 +1,7 @@
 import { Renderer } from "./Render.js"
 import type { Workspace } from "./Workspace.js"
 import { Node } from "./Node.js"
+import { Connector } from "./Connector.js"
 
 export function init(ws:Workspace){
 
@@ -16,9 +17,13 @@ export function init(ws:Workspace){
     clockBut?.addEventListener("click", ()=>{
         console.log(ws.pieceCollection)
         ws.pieceCollection.forEach(piece=>{
-            if (!(piece instanceof Node)) {return}
-            piece.run(piece)
+            if (piece instanceof Node) {
+                piece.run(piece)
+            }
+            if (piece instanceof Connector){
+                piece.spreadValue()
+            }
         })
-        })
+    })
 
 }

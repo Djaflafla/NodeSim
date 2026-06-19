@@ -12,8 +12,9 @@ export class Renderer {
     static renderWS(ws:Workspace){
         Renderer.updateMenu(ws)
         Renderer.updateNode(ws)
-        Renderer.updateConn(ws)
+        Renderer.printLine(ws)
         console.log(ws.pieceCollection)
+        console.log(ws.connectionMap)
     }
 
     static updateMenu(ws:Workspace) {
@@ -41,9 +42,6 @@ export class Renderer {
         })
 
     }
-        
-    static updateConn(ws:Workspace) {
-    }
 
     
     static createNodeDiv(node:Node, ws:Workspace) {
@@ -68,6 +66,14 @@ export class Renderer {
             inBar.className = "nodeInput"
             nodeDiv.appendChild(inBar)
         }
+        // add output bar if type=output
+        if (node.type == "output"){
+            let outValue = html.createElement("p",(node.id+"output")) as HTMLInputElement
+            node.outputP = outValue
+            outValue.className = "nodeOutput"
+            outValue.textContent = "output: "
+            nodeDiv.appendChild(outValue)
+        }
 
         
         //create button for conn
@@ -76,15 +82,24 @@ export class Renderer {
             let b1 = html.createButton(TEXTFORCONN, ()=>{
                 ws.menu.setSelected(conn.id, ws)
             Renderer.updateMenu(ws)
-            })
+            }, conn.id)
+            b1.className = "nodeConn"
             connSection.appendChild(b1)
         })
         nodeDiv.appendChild(connSection)
         
         return nodeDiv
     }
+
+    static printLine (ws:Workspace) {
+        document.getElementById("connLines")?.replaceChildren()
+
+        ws.connectionMap.forEach(connection=>{
+            Renderer.print1Line(connection[0].id, connection[1].id)
+        })
+    }
     
-    static printLine(id1:string, id2:string) {
+    static print1Line(id1:string, id2:string) {
         // get but1 pos
         let but1Pos = html.getButton(id1)?.getBoundingClientRect()
         // get but2 pos

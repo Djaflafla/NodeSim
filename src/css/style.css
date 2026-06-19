@@ -44,3 +44,11 @@
 .nodeInput {
     width: 80px;
 }
+
+.nodeOutput {
+    margin: 0px;
+}
+
+.nodeConn {
+    margin: 10px;
+}

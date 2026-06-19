@@ -1,6 +1,6 @@
 import { Connector } from "./Connector.js"
 import { Node, POSSNODE } from "./Node.js"
-import type { nodeType } from "./Node.js"
+import type { ConnMap, nodeType } from "./Node.js"
 import {Renderer as R, Renderer} from "./Render.js"
 import { Menu } from "./Menu.js"
 import { NodeFunction as nf} from "./NodeFunction.js" 
@@ -15,9 +15,9 @@ export type Piece = Node|Connector
 
 
 export class Workspace {
-    idList:string[] = []
-    Q:(Piece)[]=[]
+    Q:Piece[]=[]
     pieceCollection:(Piece)[] = []
+    connectionMap:ConnMap=[]
     menu=new Menu()
     funcForOption = [
         {type:"newNode", func:()=>{
@@ -66,9 +66,24 @@ export class Workspace {
             // delete from  pC and from conn
         }},
 
+        {type:"link", func:()=>{
+            if (!(Array.isArray(this.menu.selectedPiece))) {return}
+            let conn1 = this.menu.selectedPiece[0]
+            let conn2 = this.menu.selectedPiece[1]
+            if (!conn1 || !conn2){console.log("missing conn for link");return}
+            conn1.connectTo(conn2)
+            // conn one connected to conn 2. one way only
+            this.connectionMap.push([conn1, conn2])
+            R.renderWS(this)
+        
+            // get value 1st conn
+            // set value second conn
+            // get node second conn
+            // put node in q
+
+        }},
 
         {type:"edit", func:()=>{}},
-        {type:"link", func:()=>{}},
     ]
 
    
