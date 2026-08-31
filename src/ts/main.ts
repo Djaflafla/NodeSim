@@ -14,6 +14,10 @@ init(ws)
 // shit is broken
 // working on deleting a connector
 // include multiple connector that are connected to. 
+// cannot unlink. links multiple time
+// get noooooo indice when deleting linked conn
+// link -> clock: removes draw line
+// deleting a node doesnt delete connections to its connector
 
 
 

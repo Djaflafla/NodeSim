@@ -4,10 +4,10 @@ import { NodeFunction as nf } from "./NodeFunction.js";
 
 const CONN1 = ["input", "output", ]
 const CONN2 = ["wire", "not" ]
-const CONN3 = ["and", "or", ]
+const CONN3 = ["and", "or", "add"]
 const NODEOPTION = ["newNode", "edit", "newConn", "delNode"]
 
-export const POSSNODE = ["and", "or", "not", "input", "output", "wire", "node"] as const
+export const POSSNODE = ["and", "or", "not", "input", "output", "wire", "node", "add"] as const
 export type nodeType = typeof POSSNODE [number]
 export type ConnMap = [Connector, Connector][]
 
@@ -33,7 +33,7 @@ export class Node {
     // create piece. add Conn, give Func, give ID
     static createNode:(ws:Workspace, type:nodeType, name?:string)=>Node = (ws, type, name)=> {
         let func = nf.getFunction(type)!
-        // if (!func){console.log("no func in createNode");return}
+        // if (!func){console.error("no func in createNode");return}
         
         let id = crypto.randomUUID().slice(32)
         let newN:Node = new Node (id, type, func, name)
@@ -55,7 +55,7 @@ export class Node {
      // delete node and its connectors from pieceCollection
     // delete Conn from pieceCollection and from node.connectors
     static delPiece(piece:Node|Connector, ws:Workspace) {
-        if (!piece){console.log("no piece to del from delPiece()");return}
+        if (!piece){console.error("no piece to del from delPiece()");return}
         if (piece instanceof Node) {
             piece.connectors.forEach(conn=>{
                 let indx3 = ws.pieceCollection.findIndex(c=>c==conn)
@@ -89,7 +89,7 @@ export class Node {
                 }
                 for (let i=0;i<idxList.length;i++){
                     let indice = idxList[i]
-                    if (!indice){console.log("noooo indice");return}
+                    if (!indice){console.error("noooo indice");return}
                     ws.connectionMap.splice(indice-i, 1)
                 }
             })
@@ -111,7 +111,6 @@ export class Node {
 
     //need ws to append to pieceCollection
     addConn(ws:Workspace, amount:number=1){
-        console.log("addConn "+amount.toString())
         for (let i =0; i<amount; i++) {
             let id = crypto.randomUUID().slice(32)
             let conn = new Connector(id, this, this.connectors.length.toString())
@@ -121,7 +120,7 @@ export class Node {
     }
 
     setInputValue(){
-        if (!this.inputBar){console.log("no input bar on this node in setInputVal()");return}
+        if (!this.inputBar){console.error("no input bar on this node in setInputVal()");return}
         this.inputValue = this.inputBar.value
     }
 }

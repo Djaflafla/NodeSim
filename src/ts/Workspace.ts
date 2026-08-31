@@ -34,7 +34,7 @@ export class Workspace {
 
         {type:"newConn", func:()=>{
         let sp = this.menu.selectedPiece
-            if (!(sp instanceof Node)){console.log("seleceted piece is not a node in newConn");return}
+            if (!(sp instanceof Node)){console.error("seleceted piece is not a node in newConn");return}
             sp.addConn(this)
 
 
@@ -46,7 +46,7 @@ export class Workspace {
 
         
         {type:"delNode", func:()=>{
-            if (Array.isArray(this.menu.selectedPiece)){console.log("is an array in \"delNode\"");return}
+            if (Array.isArray(this.menu.selectedPiece)){console.error("is an array in \"delNode\"");return}
             if (!this.menu.selectedPiece){return}
             Node.delPiece(this.menu.selectedPiece, this)
             this.menu.inputBar.value=""
@@ -57,7 +57,7 @@ export class Workspace {
 
 
         {type:"delConn", func:()=>{
-            if (Array.isArray(this.menu.selectedPiece)){console.log("is an array in \"delConn\"");return}
+            if (Array.isArray(this.menu.selectedPiece)){console.error("is an array in \"delConn\"");return}
             if (!this.menu.selectedPiece){return}
             Node.delPiece(this.menu.selectedPiece, this)
             this.menu.inputBar.value=""
@@ -70,7 +70,7 @@ export class Workspace {
             if (!(Array.isArray(this.menu.selectedPiece))) {return}
             let conn1 = this.menu.selectedPiece[0]
             let conn2 = this.menu.selectedPiece[1]
-            if (!conn1 || !conn2){console.log("missing conn for link");return}
+            if (!conn1 || !conn2){console.error("missing conn for link");return}
             conn1.connectTo(conn2)
             // conn one connected to conn 2. one way only
             this.connectionMap.push([conn1, conn2])
@@ -118,10 +118,8 @@ export class Workspace {
             }
         })
         if (found.length==1) {byname = found[0]}
-        if (found.length>1) {console.log("multiple pieces with this name")}
+        if (found.length>1) {console.error("multiple pieces with this name")}
 
-        // console.log(`${found.length} is found Len`)
-        // console.log(byid?byid:byname)
         return byid?byid:byname
     }
 }

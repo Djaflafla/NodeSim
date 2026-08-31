@@ -10,12 +10,11 @@ export function init(ws:Workspace){
         ws.menu.setSelected(ws.menu.getInputVal(), ws)
         Renderer.updateMenu(ws)
 
-    }):console.log("no input bar")
+    }):console.error("no input bar")
 
 
     const clockBut = document.getElementById("clock")
     clockBut?.addEventListener("click", ()=>{
-        console.log(ws.pieceCollection)
         ws.pieceCollection.forEach(piece=>{
             if (piece instanceof Node) {
                 piece.run(piece)
@@ -24,6 +23,7 @@ export function init(ws:Workspace){
                 piece.spreadValue()
             }
         })
+        console.log(ws.pieceCollection)
     })
 
 }

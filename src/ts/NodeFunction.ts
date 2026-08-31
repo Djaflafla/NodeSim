@@ -10,7 +10,7 @@ export class NodeFunction {
             let a = node.connectors[0]
             let b = node.connectors[1]
             let c = node.connectors[2]
-            if (!a || !b || !c){console.log("missing conn for andFunc"); return}
+            if (!a || !b || !c){console.error("missing conn for andFunc"); return}
 
             if (a.value == "1" && b.value == "1"){
                c.value = "1"
@@ -24,10 +24,10 @@ export class NodeFunction {
             let a = node.connectors[0]
             let b = node.connectors[1]
             let c = node.connectors[2]
-            if (!a || !b || !c){console.log("missing conn for andFunc"); return}
-    
+            if (!a || !b || !c){console.error("missing conn for andFunc"); return}
+            
             if (a.value == "1" || b.value == "1"){
-               c.value = "1"
+                c.value = "1"
             } else {
                 c.value = "0"
             }
@@ -37,12 +37,12 @@ export class NodeFunction {
         {type:"not", func:(node)=>{
             let a = node.connectors[0]
             let b = node.connectors[1]
-            if (!a || !b ){console.log("missing conn for andFunc"); return}
-    
+            if (!a || !b ){console.error("missing conn for andFunc"); return}
+            
             a.value == "1"?b.value="0":b.value="1"
         }},
-
-
+        
+        
         {type:"input", func:(node)=>{
             let a = node.connectors[0]
             if (!a || !node.inputValue ){return}
@@ -54,15 +54,27 @@ export class NodeFunction {
             if (!a){return}
             if (node.outputP) {node.outputP.textContent = `output: ${a.value}`}
         }},
-
+        
         {type:"wire", func:(node)=>{
             if (node.connectors[0]&&node.connectors[1]){
                 node.connectors[1].value = node.connectors[0].value
             }
-
-
+            
+            
         }},
+        
+        {type:"add", func:(node)=>{
 
+            let a = node.connectors[0]
+            let b = node.connectors[1]
+            let c = node.connectors[2]
+            if (!a || !b || !c){console.error("missing conn for addFunc"); return}
+
+            if (typeof a === 'number' && typeof b === 'number') {
+                let answ = a+b
+                c.value = answ.toString()
+            }
+        }},
     ]
 
     static getFunction(type:string){

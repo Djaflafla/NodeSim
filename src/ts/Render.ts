@@ -14,7 +14,6 @@ export class Renderer {
         Renderer.updateNode(ws)
         Renderer.printLine(ws)
         console.log(ws.pieceCollection)
-        console.log(ws.connectionMap)
     }
 
     static updateMenu(ws:Workspace) {
