@@ -93,9 +93,12 @@ export class Renderer {
     static printLine (ws:Workspace) {
         document.getElementById("connLines")?.replaceChildren()
 
-        ws.connectionMap.forEach(connection=>{
-            Renderer.print1Line(connection[0].id, connection[1].id)
-        })
+        // Get connection
+        
+        for (let [connectionId, connArray] of Object.entries(ws.connectionMap)) {
+            if (!connArray[0]||!connArray[1]){return}
+            Renderer.print1Line(connArray[0].id, connArray[1].id)
+        }
     }
     
     static print1Line(id1:string, id2:string) {

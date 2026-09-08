@@ -20,7 +20,10 @@ export function init(ws:Workspace){
                 piece.run(piece)
             }
             if (piece instanceof Connector){
-                piece.spreadValue()
+                if (!piece.connectionId){return}
+                let connArray = ws.connectionMap[piece.connectionId]
+                if (!connArray){return}
+                piece.spreadValue(connArray)
             }
         })
         console.log(ws.pieceCollection)

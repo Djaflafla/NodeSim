@@ -1,15 +1,18 @@
 import { Connector } from "./Connector.js";
 import type { Workspace } from "./Workspace.js";
-import { NodeFunction as nf } from "./NodeFunction.js";
+import { nodeFunction, getFunction, getNbConn } from "./nodeFunction.js";
+import {UUID} from "./jsUtils.js"
+
+const CONNNAME = (node:Node)=>{return node.connectors.length.toString()}
 
 const CONN1 = ["input", "output", ]
 const CONN2 = ["wire", "not" ]
-const CONN3 = ["and", "or", "add"]
+const CONN3 = ["and", "or", "add"] 
 const NODEOPTION = ["newNode", "edit", "newConn", "delNode"]
 
-export const POSSNODE = ["and", "or", "not", "input", "output", "wire", "node", "add"] as const
-export type nodeType = typeof POSSNODE [number]
-export type ConnMap = [Connector, Connector][]
+// export const POSSNODE = ["and", "or", "not", "input", "output", "wire", "node", "add"] as const
+// export type nodeType = typeof POSSNODE [number]
+export type nodeType = keyof typeof nodeFunction
 
 
 export class Node {
@@ -32,88 +35,68 @@ export class Node {
 
     // create piece. add Conn, give Func, give ID
     static createNode:(ws:Workspace, type:nodeType, name?:string)=>Node = (ws, type, name)=> {
-        let func = nf.getFunction(type)!
-        // if (!func){console.error("no func in createNode");return}
+        let func = getFunction(type)
         
-        let id = crypto.randomUUID().slice(32)
+        let id = UUID(4)
         let newN:Node = new Node (id, type, func, name)
         newN.type=type
 
-        if (CONN3.includes(type)){
-            newN.addConn(ws, 3)
-            // add 3 conn
-        }
-        if (CONN1.includes(type)){
-            newN.addConn(ws)
-        }
-        if (CONN2.includes(type)){
-            newN.addConn(ws, 2)
-        }
+        newN.addConn(ws, getNbConn(type))
         return newN
     }
 
-     // delete node and its connectors from pieceCollection
-    // delete Conn from pieceCollection and from node.connectors
+    // delete node and its connectors from pieceCollection, connectionMap
+    // delete conn from pieceCollection, node.connectors, connectionMap
     static delPiece(piece:Node|Connector, ws:Workspace) {
-        if (!piece){console.error("no piece to del from delPiece()");return}
-        if (piece instanceof Node) {
-            piece.connectors.forEach(conn=>{
-                let indx3 = ws.pieceCollection.findIndex(c=>c==conn)
-                ws.pieceCollection.splice(indx3, 1)
+
+        // Remove conn from connectionMap and pieceCollection
+        function delConn (conn:Connector[]|Connector) {
+            let connArray = []
+            if (!Array.isArray(conn)) {
+                connArray.push(conn)
+            } else {connArray = conn}
+
+            // Delete connector from connectionMap
+            connArray.forEach(conn=>{
+                let connectionId = conn.connectionId
+                if (!connectionId){return}
+                let indx1 = ws.connectionMap[connectionId]?.findIndex(c=>c==conn)
+                if (!indx1){return}
+                ws.connectionMap[connectionId]?.splice(indx1, 1)
+            })
+
+            // Delete connector from pieceCollection
+            connArray.forEach(c1=>{
+                let indx2 = ws.pieceCollection.findIndex(c=>c==c1)
+                ws.pieceCollection.splice(indx2, 1)
             })
         }
+
+        if (!piece){console.error("no piece to del from delPiece()");return}
+
+        if (piece instanceof Node) {
+            // Del conn properly
+            delConn(piece.connectors)
+
+            // Del node
+            let pIndex = ws.pieceCollection.findIndex(p=>p==piece)
+            ws.pieceCollection.splice(pIndex, 1)
+        }
         if (piece instanceof Connector) {
-            
             // del conn from node.connector
             let node = piece.node
             let indx = node.connectors.findIndex(conn=>conn==piece)
             node.connectors.splice(indx, 1)
-
-            // find index of connection that have id in them
-            let idxList:number[] = []
-            ws.connectionMap.forEach((couple, idx)=>{
-                let found = couple.find(conn=>conn.id==piece.id)
-                if (found){idxList.push(idx)}
-            })
-
-            // del connection
-            // for each connection that got found in the last step
-            idxList.forEach(idx=>{
-                let firstConn = ws.connectionMap[idx]![0]
-
-                // if first conn of connection is NOT the piece being deleted
-                // so. if is connected to: del from first conn
-                if (firstConn.id !== piece.id) {
-                    let idx = firstConn.connectedTo.findIndex(conn=>conn.id==piece.id)
-                    firstConn.connectedTo.splice(idx, 1)
-                }
-                for (let i=0;i<idxList.length;i++){
-                    let indice = idxList[i]
-                    if (!indice){console.error("noooo indice");return}
-                    ws.connectionMap.splice(indice-i, 1)
-                }
-            })
-                // del in conn.connected to
-        
-            
-            // got connected to
-            // nothing to do
-            
-            // is connected to
-            // get who is connected
-            // del in his connections
-
+            // Del conn from pCollection & connectionMap
+            delConn(piece)
         }
-        // del mentioned piece from pc
-        let indx1 = ws.pieceCollection.findIndex(p=>p==piece)
-        ws.pieceCollection.splice(indx1, 1)
     }
 
     //need ws to append to pieceCollection
     addConn(ws:Workspace, amount:number=1){
         for (let i =0; i<amount; i++) {
-            let id = crypto.randomUUID().slice(32)
-            let conn = new Connector(id, this, this.connectors.length.toString())
+            let id = UUID(4)
+            let conn = new Connector(id, this, CONNNAME(this))
             this.connectors.push(conn)
             ws.pieceCollection.push(conn)
         }

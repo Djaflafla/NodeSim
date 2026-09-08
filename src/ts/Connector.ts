@@ -8,7 +8,7 @@ export class Connector {
     option = CONNOPTION
     node:Node
     name:string | undefined
-    connectedTo: Connector [] = []
+    connectionId: string | undefined
 
     constructor (id:string, node:Node, name?:string) {
         this.id = id
@@ -16,12 +16,9 @@ export class Connector {
         this.name = name
     }
 
-    connectTo (conn:Connector) {
-        this.connectedTo.push(conn)
-    }
-
-    spreadValue () {
-        this.connectedTo.forEach(conn=>{
+    // Spread value from conn to the ones connected to it
+    spreadValue (connArray:Connector[]) {
+        connArray.forEach(conn=>{
             if (this.id = conn.id){return}
             conn.value = this.value
         })

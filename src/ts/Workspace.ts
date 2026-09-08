@@ -1,116 +1,45 @@
 import { Connector } from "./Connector.js"
-import { Node, POSSNODE } from "./Node.js"
-import type { ConnMap, nodeType } from "./Node.js"
+import { Node} from "./Node.js"
+import type {nodeType } from "./Node.js"
 import {Renderer as R, Renderer} from "./Render.js"
 import { Menu } from "./Menu.js"
-import { NodeFunction as nf} from "./NodeFunction.js" 
+import { UUID } from "./jsUtils.js"
+import { menuFunc } from "./menuFunc.js"
 
-
-export type FuncMap = {
-    type:nodeType, 
-    func:()=>void
-}[]
 export type Piece = Node|Connector
-
+export type connMap = {
+    [id:string]:Connector[]
+}
 
 
 export class Workspace {
     Q:Piece[]=[]
     pieceCollection:(Piece)[] = []
-    connectionMap:ConnMap=[]
+    connectionMap:connMap = {}
     menu=new Menu()
-    funcForOption = [
-        {type:"newNode", func:()=>{
-            let input = this.menu.getInputVal()
-            let known = POSSNODE.find(str=>str==input)
-
-            let node = Node.createNode(this, known?known:"node", input)
-            this.pieceCollection.push(node)
-            this.menu.setSelected(node.id, this)
-            R.renderWS(this)
-
-        }},
-
-
-        {type:"newConn", func:()=>{
-        let sp = this.menu.selectedPiece
-            if (!(sp instanceof Node)){console.error("seleceted piece is not a node in newConn");return}
-            sp.addConn(this)
-
-
-            // put new conn in selectedPiece
-            // if (newConn){this.menu.setSelected(conn.id, this)}
-
-            R.renderWS(this)
-        }},
-
-        
-        {type:"delNode", func:()=>{
-            if (Array.isArray(this.menu.selectedPiece)){console.error("is an array in \"delNode\"");return}
-            if (!this.menu.selectedPiece){return}
-            Node.delPiece(this.menu.selectedPiece, this)
-            this.menu.inputBar.value=""
-            this.menu.setSelected("", this)
-            R.renderWS(this)
-            
-        }},
-
-
-        {type:"delConn", func:()=>{
-            if (Array.isArray(this.menu.selectedPiece)){console.error("is an array in \"delConn\"");return}
-            if (!this.menu.selectedPiece){return}
-            Node.delPiece(this.menu.selectedPiece, this)
-            this.menu.inputBar.value=""
-            this.menu.setSelected("", this)
-            R.renderWS(this)
-            // delete from  pC and from conn
-        }},
-
-        {type:"link", func:()=>{
-            if (!(Array.isArray(this.menu.selectedPiece))) {return}
-            let conn1 = this.menu.selectedPiece[0]
-            let conn2 = this.menu.selectedPiece[1]
-            if (!conn1 || !conn2){console.error("missing conn for link");return}
-            conn1.connectTo(conn2)
-            // conn one connected to conn 2. one way only
-            this.connectionMap.push([conn1, conn2])
-            R.renderWS(this)
-        
-            // get value 1st conn
-            // set value second conn
-            // get node second conn
-            // put node in q
-
-        }},
-
-        {type:"edit", func:()=>{}},
-    ]
-
    
 
     doOpt(opt:string){
-        let funcObj = this.funcForOption.find(obj=>obj.type== opt)
-        funcObj?.func()
+        let func = menuFunc[opt]
+        if (!func) {console.error(`no function for option: ${opt}`);return}
+        func(this)
     }
-
-    
-    // checkQ () {
-    //     // if Node in Q, run it
-    //     let next = this.Q[0]
-    //     if (!next || !(next instanceof Node)) {return}
-
-    //     next.run(next)
-    //     this.Q.shift()
-    // }
 
     // Return piece of pieceCollection by searching id first then name
     // return undefined if no match or multiple match
     getPiece:(value:string)=>Piece | undefined = (value) => {
+        let found:(Piece)[]= []
 
         //check by id first (id is more precise bc of uuid)
-        let byid = this.pieceCollection.find(piece=>piece.id==value)
+        let byid = undefined
+        this.pieceCollection.forEach(piece=>{
+            if (piece.id==value) {
+                found.push(piece)
+            }
+        })
+        if (found.length==1) {byid = found[0]}
+        if (found.length>1) {console.error("multiple pieces with this id")}
 
-        let found:(Piece)[]= []
         let byname = undefined
         this.pieceCollection.forEach(piece=>{
             if (piece.name==value) {
@@ -122,4 +51,46 @@ export class Workspace {
 
         return byid?byid:byname
     }
+
+    connect(conn1:Connector, conn2:Connector) {
+        let connId = UUID(4)
+        this.connectionMap[connId] = [conn1, conn2]
+        conn1.connectionId=connId
+        conn2.connectionId=connId
+        return
+    }
+
+    // connectVERSION1(conn1:Connector, conn2:Connector){
+    //     // If both already connected: concat 2 into 1. delete 2
+    //     // If 1 is already connected push 2 into 1
+    //     // If none is conneceted: create connection
+    //     if (conn1.connectionId) {
+    //         let conn1Array = this.connectionMap[conn1.connectionId]
+    //         if (conn2.connectionId){
+                
+    //             let conn2Array = this.connectionMap[conn2.connectionId]
+    //             if (!conn1Array || !conn2Array){return}
+    //             // concat add array1 to array2 and returns a copy
+    //             this.connectionMap[conn1.connectionId] = conn1Array?.concat(conn2Array)
+    //             delete this.connectionMap[conn2.connectionId]
+    //             return
+    //         }
+    //         if (!conn1Array){return}
+    //         conn1Array.push(conn2)
+    //         return
+    //     }
+
+    //     let connId = UUID(4)
+    //     this.connectionMap[connId] = [conn1, conn2]
+    //     return
+    // }
 }
+
+ // checkQ () {
+    //     // if Node in Q, run it
+    //     let next = this.Q[0]
+    //     if (!next || !(next instanceof Node)) {return}
+
+    //     next.run(next)
+    //     this.Q.shift()
+    // }

@@ -11,6 +11,19 @@ const ws = new Workspace()
 init(ws)
 
 
+
+// Did ws.Connect
+// Did version 2 of connect for ease of drawing lines
+// connectVERSION1(), connect()
+
+// Did line renderer for connection
+// Did spreadValue
+// Did change in format of nodeFunc and menuFunc
+// Did delPiece, delConn
+// Fucked a little in createNode
+// nodeFunction: stores how many conn for node
+
+
 // shit is broken
 // working on deleting a connector
 // include multiple connector that are connected to. 
@@ -18,6 +31,8 @@ init(ws)
 // get noooooo indice when deleting linked conn
 // link -> clock: removes draw line
 // deleting a node doesnt delete connections to its connector
+
+// 
 
 
 

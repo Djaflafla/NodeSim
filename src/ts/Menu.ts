@@ -1,15 +1,13 @@
 import { Connector } from "./Connector.js";
 import { Node } from "./Node.js";
-import type {FuncMap, Piece} from "./Workspace.js"
+import type {Piece} from "./Workspace.js"
 import type { Workspace } from "./Workspace.js";
 
 const INBAR = document.getElementById("userInput") as HTMLInputElement  // input bar Element
 
-
 export class Menu {
     inputBar= INBAR;
     lastValue:string = ""
-    // pieceCollection:Piece[] = []
     optList:string[] = []
     selectedPiece: Piece | Connector[] | undefined 
 
