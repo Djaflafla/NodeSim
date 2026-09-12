@@ -34,7 +34,7 @@ export class Menu {
             return
         }
         this.selectedPiece=p
-        this.optList=p.option
+        this.optList=p.menuOption
         this.inputBar.value = this.selectedPiece.name?this.selectedPiece.name:this.selectedPiece.id
     }
 

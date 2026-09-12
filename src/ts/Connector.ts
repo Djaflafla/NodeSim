@@ -1,27 +1,30 @@
 import { Node } from "./Node.js";
+type connType = "input"|"output"
 
 const CONNOPTION = ["delConn"]
 export class Connector {
     id:string
-    type = "conn"
+    type: connType
     value:string = "noValue"
-    option = CONNOPTION
+    menuOption = CONNOPTION
     node:Node
-    name:string | undefined
-    connectionId: string | undefined
+    name:string
+    // One Connector = One Connection
+    connectionId: string = ""
 
-    constructor (id:string, node:Node, name?:string) {
+    constructor (id:string, node:Node, type:connType) {
         this.id = id
         this.node = node
-        this.name = name
+        this.name = id
+        this.type = type
     }
 
-    // Spread value from conn to the ones connected to it
-    spreadValue (connArray:Connector[]) {
-        connArray.forEach(conn=>{
-            if (this.id = conn.id){return}
-            conn.value = this.value
-        })
-    }
+    // // Spread value from conn to the ones connected to it
+    // spreadValue (connArray:Connector[]) {
+    //     connArray.forEach(conn=>{
+    //         if (this.id == conn.id){return}
+    //         conn.value = this.value
+    //     })
+    // }
 
 }

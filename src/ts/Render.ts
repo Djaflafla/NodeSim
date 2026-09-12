@@ -1,7 +1,9 @@
 import * as html from "./htmlUtils.js"
-import { Node } from "./Node.js"
+import { Node,InputNode, OutputNode } from "./Node.js"
 import { Menu } from "./Menu.js"
 import { Workspace } from "./Workspace.js"
+import type { Connection } from "./Connection.js"
+import type { Connector } from "./Connector.js"
 
 const BUTTONSECTION = document.getElementById("buttonSection")!
 const NODESPACE = document.getElementById("nodeSpace")!
@@ -14,12 +16,12 @@ export class Renderer {
         Renderer.updateNode(ws)
         Renderer.printLine(ws)
         console.log(ws.pieceCollection)
+        console.log(ws.cm.connMap)
     }
 
     static updateMenu(ws:Workspace) {
         BUTTONSECTION.replaceChildren()
         // setFuncList if know value
-
 
         // forEach function: create button
         ws.menu.optList.forEach(opt=>{
@@ -28,63 +30,73 @@ export class Renderer {
         })
     }
 
+    // render every nodes
     static updateNode(ws:Workspace) {
         // clean old div
         let nodeSpace = NODESPACE
         nodeSpace.replaceChildren()
 
-        ws.pieceCollection.forEach(piece=>{
+        Object.entries(ws.pieceCollection).forEach(([id, piece])=>{
             if (piece instanceof Node) {
                 let div = Renderer.createNodeDiv(piece, ws)
                 nodeSpace.appendChild(div)
             }
         })
-
     }
 
-    
-    static createNodeDiv(node:Node, ws:Workspace) {
+    static createNodeDiv(node:Node|InputNode, ws:Workspace) {
         // Create div to return
-        let nodeDiv = html.createElement("div", node.id)
-        nodeDiv.className = "nodeDiv"
+        let nodeDiv = html.createElement("div", {className:"nodeDiv"})
+        let firstDiv = html.createElement("div")
         
+
         //create button for name
-        let button = html.createButton(node.name!, ()=>{
-            ws.menu.setSelected(node.id, ws)
-            Renderer.updateMenu(ws)
-        })
-        button.className = "nameButton"
-        nodeDiv.appendChild(button)
+        let button = html.createButton(
+            node.name, 
+            ()=>{
+                ws.menu.setSelected(node.id, ws)
+                Renderer.updateMenu(ws)
+            }, 
+            {className:"nameButton"}
+        )
+        firstDiv.appendChild(button)
 
-        // add input bar if type=input
-        if (node.type == "input"){
-            let btn = html.createButton("set", ()=>{node.setInputValue()} )
-            nodeDiv.appendChild(btn)
-            let inBar = html.createElement("input",(node.id+"input")) as HTMLInputElement
-            node.inputBar = inBar
-            inBar.className = "nodeInput"
-            nodeDiv.appendChild(inBar)
+        // add input bar & setButton if type=input
+        if (node instanceof InputNode){
+            firstDiv.appendChild(node.setButton)
+            firstDiv.appendChild(node.inputBar)
         }
-        // add output bar if type=output
-        if (node.type == "output"){
-            let outValue = html.createElement("p",(node.id+"output")) as HTMLInputElement
-            node.outputP = outValue
-            outValue.className = "nodeOutput"
-            outValue.textContent = "output: "
-            nodeDiv.appendChild(outValue)
+        // add Result if outputNode
+        if (node instanceof OutputNode){
+            firstDiv.appendChild(node.outputBar)
         }
-
         
-        //create button for conn
+
         let connSection = html.createElement("div")
-        node.connectors.forEach(conn=>{
+        //create button for conn
+        Object.entries(node.connectors.input).forEach(([id, conn])=>{
             let b1 = html.createButton(TEXTFORCONN, ()=>{
                 ws.menu.setSelected(conn.id, ws)
-            Renderer.updateMenu(ws)
-            }, conn.id)
-            b1.className = "nodeConn"
+                Renderer.updateMenu(ws)
+            }, {
+                className:"nodeInputConn",
+                id:conn.id
+            })
             connSection.appendChild(b1)
         })
+        Object.entries(node.connectors.output).forEach(([id, conn])=>{
+            let b1 = html.createButton(TEXTFORCONN, ()=>{
+                ws.menu.setSelected(conn.id, ws)
+                Renderer.updateMenu(ws)
+            }, {
+                className:"nodeOutputConn",
+                id:conn.id
+            })
+            connSection.appendChild(b1)
+        })
+
+
+        nodeDiv.appendChild(firstDiv)
         nodeDiv.appendChild(connSection)
         
         return nodeDiv
@@ -95,17 +107,23 @@ export class Renderer {
 
         // Get connection
         
-        for (let [connectionId, connArray] of Object.entries(ws.connectionMap)) {
-            if (!connArray[0]||!connArray[1]){return}
+        Object.entries(ws.cm.connMap).forEach(([id, connex])=>{
+            // for each connection: draw from 1 conn to 2n conn
+            
+            let connArray:Connector[] = []
+            Object.entries(connex.connectors).forEach(([id, conn])=>{connArray.push(conn)})
+
+
+            if (!connArray[0]||!connArray[1]){console.error("missing conn to link");return}
             Renderer.print1Line(connArray[0].id, connArray[1].id)
-        }
+        })
     }
     
     static print1Line(id1:string, id2:string) {
         // get but1 pos
-        let but1Pos = html.getButton(id1)?.getBoundingClientRect()
+        let but1Pos = html.getElement(id1)?.getBoundingClientRect()
         // get but2 pos
-        let but2Pos = html.getButton(id2)?.getBoundingClientRect()
+        let but2Pos = html.getElement(id2)?.getBoundingClientRect()
         
         // create line
         let line = html.createSvg("line")

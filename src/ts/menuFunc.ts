@@ -4,6 +4,7 @@ import { Renderer as R} from "./Render.js"
 import type { nodeType } from "./Node.js"
 import { nodeFunction } from "./nodeFunction.js"
 import { isNodeType } from "./jsUtils.js"
+import { Connector } from "./Connector.js"
 
 export type menuFunc = {
     [option:string]:(ws:Workspace)=>void
@@ -15,25 +16,26 @@ export const menuFunc:menuFunc = {
         let input = ws.menu.getInputVal()
         let known
         if (isNodeType(input)){ known = input}
-       
 
-        let node = Node.createNode(ws, known?known:"node", input)
-        ws.pieceCollection.push(node)
+        let node = ws.createNode(known?known:"node", input)
+        ws.pieceCollection[node.id] = node
         ws.menu.setSelected(node.id, ws)
         R.renderWS(ws)
     },
         
-    "newConn" : (ws)=>{
-    let sp = ws.menu.selectedPiece
-        if (!(sp instanceof Node)){console.error("seleceted piece is not a node");return}
-        sp.addConn(ws)
-        R.renderWS(ws)
-    },
+    // "newConn" : (ws)=>{
+    // let sp = ws.menu.selectedPiece
+    //     if (!(sp instanceof Node)){console.error("seleceted piece is not a node");return}
+    //     // Useless to add a conn when I cannot use it yet.
+    //     // Be back later
+    //     // sp.addConn(ws)
+    //     // R.renderWS(ws)
+    // },
     
     "delNode":(ws)=>{
         if (Array.isArray(ws.menu.selectedPiece)){console.error("is an array in \"delNode\"");return}
         if (!ws.menu.selectedPiece){return}
-        Node.delPiece(ws.menu.selectedPiece, ws)
+        Node.delNode(ws.menu.selectedPiece, ws)
         ws.menu.inputBar.value=""
         ws.menu.setSelected("", ws)
         R.renderWS(ws)
@@ -41,9 +43,10 @@ export const menuFunc:menuFunc = {
     },
 
     "delConn" : (ws)=>{
-        if (Array.isArray(ws.menu.selectedPiece)){console.error("is an array in \"delConn\"");return}
-        if (!ws.menu.selectedPiece){return}
-        Node.delPiece(ws.menu.selectedPiece, ws)
+        if (!ws.menu.selectedPiece){console.error("no selected piece for delConn");return}
+        if (!(ws.menu.selectedPiece instanceof Connector)){console.error("piece is not a connector");return}
+
+        ws.cm.delConnector(ws.menu.selectedPiece, ws)
         ws.menu.inputBar.value=""
         ws.menu.setSelected("", ws)
         R.renderWS(ws)
@@ -56,9 +59,11 @@ export const menuFunc:menuFunc = {
         let conn2 = ws.menu.selectedPiece[1]
         if (!conn1 || !conn2){console.error("missing conn for link");return}
 
-        ws.connect(conn1, conn2)
+        ws.cm.connect(conn1, conn2)
         R.renderWS(ws)
     },
 
     "edit" : (ws)=>{},
+
+
 }

@@ -1,56 +1,41 @@
-import {Menu} from "./Menu.js"
 import { Workspace } from "./Workspace.js"
 import { init } from "./init.js"
-import { Node } from "./Node.js"
-import { Connector } from "./Connector.js"
-import * as html from "./htmlUtils.js"
-
 
 
 const ws = new Workspace()
 init(ws)
 
-
-
-// Did ws.Connect
-// Did version 2 of connect for ease of drawing lines
-// connectVERSION1(), connect()
-
-// Did line renderer for connection
-// Did spreadValue
-// Did change in format of nodeFunc and menuFunc
-// Did delPiece, delConn
-// Fucked a little in createNode
-// nodeFunction: stores how many conn for node
-
-
-// shit is broken
-// working on deleting a connector
-// include multiple connector that are connected to. 
-// cannot unlink. links multiple time
-// get noooooo indice when deleting linked conn
-// link -> clock: removes draw line
-// deleting a node doesnt delete connections to its connector
-
-// 
+// Did Connectors, Connection, Connection Manager
+// Connect(), delConn()
+// Everything is a dict now
+// Removed addConn from menuOptions
+// Special class for input and output node
+// printLine is printing
+// setButton sets
 
 
 
-// input connectors are giving "na value" to output conn. should be the other way around
-// disconect when connection to another con. contectedTo should be an array
 
-// how to really remove data from mem
-
-// conn delete
-// spreadvalue
-
-// look who has conn in their connectedto. then delete
+// node function wont work because of index number
 
 
-// disable new conn on preset?
+
+// CONNECTION
+// 1 connector = 1 network. Multiple connector but only 1 connection
+// All the connectors receive same value at the same time
+// need to activate the receiving node for the value not to be erase by the next node firing
+// probleme is that lines connected on the same connector are not one connection
+// Unlink, Duplicate connexion
+
+
+
+// Html/CSS, spreadValue, Lines, setInput, ReadOutput, flow, clock
+
+// Class InputNode is now in same folder as Node.ts because of initialization problems
+// link -> adding new node after clock: removes draw line
+// Put TEXTFORCONN = to their value
+
 
 // set conn
 // put next node in Q
 // ws.checkQ()
-
-// the option defaults as "newNode" when matchpiece is undefined(to many match byname(ws.getPiece))

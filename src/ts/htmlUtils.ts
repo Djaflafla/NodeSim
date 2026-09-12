@@ -1,19 +1,29 @@
+type Opt = {
+    id?:string,
+    className?: string,
+    textContent?: string
+}
+
 // Returns a button with: id, text, function
-export function createButton (text:string,  func:()=>void, id?:string) {
-    let button = createElement("button", id)
+export function createButton (text:string, func:()=>void, opt:Opt={}) {
+    let button = createElement("button", opt)
     button.textContent = text
     button.addEventListener("click", func)
     return button
 }
 
 // Returns document element with id
-export function createElement(type:string, id?:string ){ 
+export function createElement(type:string, opt:Opt={}){ 
     let newElem = document.createElement(type)
-    if (id) {newElem.id = id}
+    if (opt["id"]) {newElem.id = opt["id"]}
+    if (opt["className"]) {newElem.className = opt["className"]}
+    if (opt["textContent"]) {newElem.textContent = opt["textContent"]}
+
+
     return newElem
 }
 
-export function getButton(id:string){
+export function getElement(id:string){
     return document.getElementById(id)
 }
 

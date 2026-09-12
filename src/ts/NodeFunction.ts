@@ -1,17 +1,20 @@
+
 import type { Node, nodeType } from "./Node.js"
+import { InputNode } from "./Node.js"
+import { Renderer } from "./Render.js"
 
 type NF = {
-    [type:string]:[nbConn:number,(node:Node)=>void]
+    [type:string]:[nbInput:number, nbOutput:number, (node:Node)=>void]
 }
 
 export const nodeFunction = {
-    "node" : [0, ()=>{}],
+    "node" : [0, 0, ()=>{return}],
 
-    "and" : [3, (node)=>{
+    "and" : [2, 1,(node)=>{
 
-            let a = node.connectors[0]
-            let b = node.connectors[1]
-            let c = node.connectors[2]
+            let a = node.connectors.input[0]
+            let b = node.connectors.input[1]
+            let c = node.connectors.output[0]
             if (!a || !b || !c){console.error("missing conn for andFunc"); return}
 
             if (a.value == "1" && b.value == "1"){
@@ -22,10 +25,10 @@ export const nodeFunction = {
         }],
         
         
-    "or" : [3, (node)=>{
-            let a = node.connectors[0]
-            let b = node.connectors[1]
-            let c = node.connectors[2]
+    "or" : [2, 1, (node)=>{
+            let a = node.connectors.input[0]
+            let b = node.connectors.input[1]
+            let c = node.connectors.output[0]
             if (!a || !b || !c){console.error("missing conn for andFunc"); return}
             
             if (a.value == "1" || b.value == "1"){
@@ -36,38 +39,40 @@ export const nodeFunction = {
         }],
         
         
-    "not" : [2, (node)=>{
-        let a = node.connectors[0]
-        let b = node.connectors[1]
+    "not" : [1, 1, (node)=>{
+        let a = node.connectors.input[0]
+        let b = node.connectors.output[0]
         if (!a || !b ){console.error("missing conn for andFunc"); return}
         
         a.value == "1"?b.value="0":b.value="1"
     }],
     
-    
-    "input" : [1, (node)=>{
-        let a = node.connectors[0]
-        if (!a || !node.inputValue ){return}
-        a.value = node.inputValue
-    }],
-    
-    "output" : [1, (node)=>{
-        let a = node.connectors[0]
-        if (!a){return}
-        if (node.outputP) {node.outputP.textContent = `output: ${a.value}`}
-    }],
-    
-    "wire" : [2, (node)=>{
-        if (node.connectors[0]&&node.connectors[1]){
-            node.connectors[1].value = node.connectors[0].value
+    "input" : [0, 1, (node)=>{
+
+        let conn1 = Object.entries(node.connectors.output)[0]
+        if (conn1&&node instanceof InputNode){
+            conn1[1].value = node.inputBar.value
+
         }
     }],
     
-    "add" : [3, (node)=>{
+    "output" : [1, 0, (node)=>{
+        // let a = node.connectors[0]
+        // if (!a){return}
+        // if (node.outputP) {node.outputP.textContent = `output: ${a.value}`}
+    }],
+    
+    "wire" : [1, 1, (node)=>{
+        if (node.connectors.input[0]&&node.connectors.output[0]){
+            node.connectors.output[0].value = node.connectors.input[0].value
+        }
+    }],
+    
+    "add" : [2, 1, (node)=>{
 
-        let a = node.connectors[0]
-        let b = node.connectors[1]
-        let c = node.connectors[2]
+        let a = node.connectors.input[0]
+        let b = node.connectors.input[1]
+        let c = node.connectors.output[0]
         if (!a || !b || !c){console.error("missing conn for addFunc"); return}
 
         if (typeof a === 'number' && typeof b === 'number') {
@@ -78,14 +83,15 @@ export const nodeFunction = {
 } satisfies NF
 
 export function getFunction(funcKey:nodeType) {
-    let func = nodeFunction[funcKey][1]
-    if (!func) {console.error(`no function for key (nodeFunc). Key: ${funcKey}`);return ()=>{}}
+    let func = nodeFunction[funcKey][2]
+    if (!func) {console.error(`no function for key (nodeFunc). Key: ${funcKey}`);return (node:Node)=>{}}
     return func
 }
 
 // Returns value of number of connector for node
-export function getNbConn(funcKey:nodeType) {
-    let nb = nodeFunction[funcKey][0]
-        if (!nb) {console.error(`no value for key (nodeFunc). Key: ${funcKey}`);return 0}
-        return nb
+export function getNbConn(funcKey:nodeType):[number, number] {
+    let nbIn = nodeFunction[funcKey][0]
+    let nbOut = nodeFunction[funcKey][1]
+        if (!nodeFunction[funcKey]) {console.error(`no value for key (nodeFunc). Key: ${funcKey}`);return [0, 0]}
+        return [nbIn, nbOut]
 }
