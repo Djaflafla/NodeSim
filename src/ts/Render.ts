@@ -2,8 +2,10 @@ import * as html from "./htmlUtils.js"
 import { Node,InputNode, OutputNode } from "./Node.js"
 import { Menu } from "./Menu.js"
 import { Workspace } from "./Workspace.js"
-import type { Connection } from "./Connection.js"
-import type { Connector } from "./Connector.js"
+import { Connection } from "./Connection.js"
+import { Connector } from "./Connector.js"
+import type { NestedConnectors } from "./Connection.js"
+import type { ConnectorDict } from "./Connection.js"
 
 const BUTTONSECTION = document.getElementById("buttonSection")!
 const NODESPACE = document.getElementById("nodeSpace")!
@@ -106,17 +108,33 @@ export class Renderer {
         document.getElementById("connLines")?.replaceChildren()
 
         // Get connection
-        
-        Object.entries(ws.cm.connMap).forEach(([id, connex])=>{
-            // for each connection: draw from 1 conn to 2n conn
-            
-            let connArray:Connector[] = []
-            Object.entries(connex.connectors).forEach(([id, conn])=>{connArray.push(conn)})
-
-
-            if (!connArray[0]||!connArray[1]){console.error("missing conn to link");return}
-            Renderer.print1Line(connArray[0].id, connArray[1].id)
+        Object.entries(ws.cm.connMap).forEach(([id, conex])=>{
+            looopidou(conex.connectionFlow)
         })
+        
+        function looopidou (array:NestedConnectors):Connector {
+            let buffer1:Connector[]=[]
+            
+
+            for (let elem of array) {
+                if (elem instanceof Connector) {
+                    buffer1.push(elem)
+                }
+                if (Array.isArray(elem)) {
+                    buffer1.push(looopidou(elem))
+                }
+            }
+            while (buffer1.length>1){
+                let c1= buffer1[buffer1.length-1]
+                let c2 = buffer1[buffer1.length-2]
+                if ((c1 instanceof Connector) && (c2 instanceof Connector)){
+                    console.log(c1, c2)
+                    Renderer.print1Line(c1.id, c2.id)
+                }
+                buffer1.pop()
+            }
+            return buffer1[0]!
+        }
     }
     
     static print1Line(id1:string, id2:string) {

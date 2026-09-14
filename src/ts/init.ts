@@ -17,17 +17,18 @@ export function init(ws:Workspace){
     clockBut?.addEventListener("click", ()=>{
         Renderer.renderWS(ws)
     })
-    //     Object.entries(ws.pieceCollection).forEach(([key, piece])=>{
-    //         if (piece instanceof Node) {
-    //             piece.run(piece)
-    //         }
-    //         if (piece instanceof Connector){
-    //             if (!piece.connectionId){return}
-    //             let connArray = ws.cm[piece.connectionId]
-    //             if (!connArray){return}
-    //             piece.spreadValue(connArray)
-    //         }
-    //     })
-    // })
 
 }
+
+        // Object.entries(ws.pieceCollection).forEach(([key, piece])=>{
+        //     if (piece instanceof Node) {
+        //         piece.run(piece)
+        //     }
+        //     if (piece instanceof Connector){
+        //         if (!piece.connectionId){return}
+        //         let connArray = ws.cm[piece.connectionId]
+        //         if (!connArray){return}
+        //         piece.spreadValue(connArray)
+        //     }
+        // })
+    

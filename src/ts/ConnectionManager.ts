@@ -2,7 +2,7 @@ import { Connector } from "./Connector.js"
 import { UUID } from "./jsUtils.js"
 import { Connection } from "./Connection.js"
 import { Workspace } from "./Workspace.js"
-import type { ConnectorDict } from "./Connection.js"
+import type { ConnectorDict, NestedConnectors } from "./Connection.js"
 import { Renderer } from "./Render.js"
 
 
@@ -16,13 +16,40 @@ export type connMap = {
 export class ConnectionManager{
     connMap:connMap={}
 
-    connect(conn1:Connector, conn2:Connector) {
-        let connId = UUID()
+    connect(contor1:Connector, contor2:Connector) {
 
-        this.connMap[connId] = this.createConnection(connId, [conn1, conn2])
-        conn1.connectionId = connId
-        conn2.connectionId = connId
+        if (!contor1.connectionId && !contor2.connectionId) {
+            // If not already in connection. Create connexion and add to connMap
+            this.createConnection([contor1, contor2])
+            console.log("JJJJJJJJJJ")
+            return
+        }
+        
+        if (contor1.connectionId&&contor2.connectionId){
+            console.log("CCCCCCCC")
+            // Both are in a connexion
+            
+            // Get connexion of 1
+            // Get connexion of 2
+            console.error("cannot connect because both are in a connection")
+            
+            return
+        }
+        
+        // Conn1 no, conn2 yes
+        if (!contor1.connectionId) {
+            console.log("LLLLLLLLLLL")
+            // Connect 1 to existing of conn2
+            this.connMap[contor2.connectionId]?.addConnector(contor1, contor2)
+            return
+        }
+        
+        console.log("PPPPPPPP")
+        // Conn1 yes, conn2 no
+        // Connect 2 to existing of conn1
+        this.connMap[contor1.connectionId]?.addConnector(contor2, contor1)
         return
+
     }
 
     delConnFromNode (connector:Connector) {
@@ -39,22 +66,25 @@ export class ConnectionManager{
 
     //Del connection(from connMap) if less than 2 connector
     delConnFromConnection(connector:Connector) {
-        // del from connection
-        if (connector.connectionId) {
-            delete this.connMap[connector.connectionId]?.connectors[connector.id]
+        if (!connector.connectionId) {return}
+        
+        let connection = this.connMap[connector.connectionId]
+        if (!connection){console.error("no connexion with this connectionID");return}
 
-            let kv = Object.entries(this.connMap[connector.connectionId]!.connectors)
-            // check if still connection and delete
-            if (kv.length >1) {return}
+        // remove from connector by id
+        delete connection.connectorsById[connector.id]
 
-            // get last conntor in connex
-            // remove connexId from last conntor
-            if (!kv[0]){return}
-            let lastConn:Connector = kv[0][1]
-            lastConn.connectionId = ""
-            delete this.connMap[connector.connectionId]
-        }
+        // Remove conex id from node
+        connector.connectionId=""
+
+        // remove from connectionFlow
+        let newCF = connection.removeFromConnectionFlow(connector, connection.connectionFlow, this)[0]
+
+        connection.connectionFlow = newCF
+
     }
+    
+    
 
     delConnector(connector:Connector, ws:Workspace) {
         // del from node
@@ -62,42 +92,16 @@ export class ConnectionManager{
         // Kill connection if dead
         // clean connMap prn
         // del from pieceCollection
+
         this.delConnFromNode(connector)
         this.delConnFromConnection(connector)
         delete ws.pieceCollection[connector.id]
-        // del from pieceColl
-    
-        delete ws.pieceCollection[connector.id]
     }
 
-    disconnect() {}
+    createConnection (NestedConnectors:NestedConnectors) {
+        let id = UUID()
+        let newC = new Connection(id, NestedConnectors)
 
-
-    // connectVERSION1(conn1:Connector, conn2:Connector){
-    //     // If both already connected: concat 2 into 1. delete 2
-    //     // If 1 is already connected push 2 into 1
-    //     // If none is conneceted: create connection
-    //     if (conn1.connectionId) {
-    //         let conn1Array = this.connectionMap[conn1.connectionId]
-    //         if (conn2.connectionId){
-                
-    //             let conn2Array = this.connectionMap[conn2.connectionId]
-    //             if (!conn1Array || !conn2Array){return}
-    //             // concat add array1 to array2 and returns a copy
-    //             this.connectionMap[conn1.connectionId] = conn1Array?.concat(conn2Array)
-    //             delete this.connectionMap[conn2.connectionId]
-    //             return
-    //         }
-    //         if (!conn1Array){return}
-    //         conn1Array.push(conn2)
-    //         return
-    //     }
-
-    createConnection (id:string, conns:Connector[]):Connection {
-        let connObj:ConnectorDict = {}
-        conns.forEach(c=>{
-            connObj[c.id]=c
-        })
-        return new Connection(id, connObj)
+        this.connMap[id] = newC
     }
 }
