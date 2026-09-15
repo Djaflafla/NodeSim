@@ -17,8 +17,9 @@ export class Renderer {
         Renderer.updateMenu(ws)
         Renderer.updateNode(ws)
         Renderer.printLine(ws)
-        console.log(ws.pieceCollection)
+        // console.log(ws.pieceCollection) 
         console.log(ws.cm.connMap)
+        
     }
 
     static updateMenu(ws:Workspace) {
@@ -128,7 +129,6 @@ export class Renderer {
                 let c1= buffer1[buffer1.length-1]
                 let c2 = buffer1[buffer1.length-2]
                 if ((c1 instanceof Connector) && (c2 instanceof Connector)){
-                    console.log(c1, c2)
                     Renderer.print1Line(c1.id, c2.id)
                 }
                 buffer1.pop()

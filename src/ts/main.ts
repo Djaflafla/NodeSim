@@ -5,58 +5,63 @@ import { Connector } from "./Connector.js"
 import { CFFunc } from "./ConnectionFlow.js"
 
 const ws = new Workspace()
-// init(ws)
+init(ws)
 
 
 // ---------------------------------------------
 
 
+// connect 2 connection together
 
-type z = (number|z)[]
-// function cleanLastConn(array:z):z{
-//     let clean = []
-//     if (Number.isFinite(array[0])) {
-//         return array
-//     }
-//     if (Array.isArray(array[0])) {
-//         array[0].reverse()
-        
-        
-//         let temp = cleanFirstConn(array[0])
-        
-//         temp.forEach(conn=>{
-//             clean.push(conn)
-//         })
-//         // met le resste
-//         for (let i =1; i<array.length; i++){
-//             clean.push(array[i]!)
-//         }
-//         console.log(JSON.stringify(array));
-//         return cleanFirstConn(clean)
-//     }
-//     throw new Error ("wtf, code 44444")
-// }
+// Link -> connect()
+// Connect() -> createConnection ✅ , connectToFlow
+// connectToFlow -> add first/last | addInsideFlow
+// addInsideFlow
 
-// [[[66,7,[3],9],[3,[77]]],4,6]
-
-
-// let array = [[66, 7, [9], [[[3, 77]]], []], 4, [], 6]
-        // [[[66,7,[3],9],[3,[77]]],4,6]
-// let array = [[[66, 7, 8, 9], [3, 77], [86, 25]], 4, 5, 6]
-// let array = [[[[[66, 7, 8]]], [3, [[], []]], []], 4, 5, 6]
-let array = [[[[[[[[[5, [[[[[[[[[[[[6]]]]]]]]]]]], [[55, 66], [9]]]], [[[7, 8]]]]], [[[[], [], [[[], []]]]]]]]]]]
-// let array = [[[[[[[[[5, [[[[[[[[[[[[6]]]]]]]]]]]], [[55, 66], [9]]]], [[[7, 8]]]]], [[[[], [], [[[], []]]]]]]]]]]
+// delConn -> cm.delConn
+// cm.delConn -> delFromNode ✅ , delFromConnection
+// delFromConex -> splitFlow ✅, check if still alive ✅
 
 
 
 
-// Lets gooooo
-// finally did removeExtra()
-// NOW: cleanLast conn
+
+// Did clean last
+// it fucking works. ConnectionFlow is goooooodyyyyyoooooo
+
+//splitFlow(), addInsideFlow
+
+// if first half of split connection is alone. doesnt kill connection
+// need to
+
+// [2, [[8, 9], 4, 69], 5, 45]
+// [2, [[], 4, 69], 5, 45] [9]
+// [2, [], 5, 45] [4, 69]
+// [2] [4, 69] [5, 45]
+// [] [4, 69] [5, 45]
+
+
+
+// testing linking and unlinking and deleting
 
 // delConnFromConnection and removeInConnectionFlow
-// Clean last index of CF
 // Connect two existing connexion
 // unlink
 
 // Put TEXTFORCONN = to their value
+
+
+// [2, [3, [8, 9], 4], 5]
+// [2, [3, [], 4], 5] [9]
+
+// [2, [3, [8, 9], 4], 5]
+// [2, [], 5] [[8, 9], 4]
+
+// [[2]] [4, 69] [4, 45]
+// 
+
+
+
+
+
+// [2] [[[8, 9], 4, 69], 5, 45]
