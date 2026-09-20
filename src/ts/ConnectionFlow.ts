@@ -12,7 +12,7 @@ export const CFFunc = {
         let workArray = array
         workArray = CFFunc.removeExtra(workArray)
         workArray = CFFunc.cleanFirstConn(workArray)
-        workArray = CFFunc.cleanLastConn(workArray)
+        // workArray = CFFunc.cleanLastConn(workArray)
         
         // 
         return workArray
@@ -21,16 +21,26 @@ export const CFFunc = {
     },
 
 
-    cleanLastConn : (array:NestedConnectors):NestedConnectors => {
-        if (array.length < 2){return array}
-        let last = array[array.length-1]
-        if (Array.isArray(last)){
-            // if last is an array
-            array.pop()
-            last.forEach(elem=>{array.push(elem)})
-        }
-        return array
-    },
+    // cleanLastConn : (array:NestedConnectors):NestedConnectors => {
+    //     let last = array[array.length-1]
+    //     if (Array.isArray(last)){
+    //         if (last.length < 3){return array}
+    //         // Select first embranchement
+    //         // get firstCommonConn
+            
+
+    //     }
+
+    //     for (let [index, elem] of array.entries()){
+    //         if (Array.isArray(last)){
+    //             // if last is an array
+    //             array.pop()
+    //             last.forEach(elem=>{array.push(elem)})
+    //         }
+    //         return array
+
+    //     }
+    // },
 
 
     // Removes empty. [2, []] = [2]

@@ -27,11 +27,14 @@ export class ConnectionManager{
         if (contor1.connectionId&&contor2.connectionId){
             // Both are in a connexion
             
-            // Get connexion of 1
-            // Get connexion of 2
             console.error("cannot connect because both are in a connection")
             
             return
+            // Get connexion of 1
+            // Get connexion of 2
+            // 
+
+
         }
         
         // Conn1 no, conn2 yes
