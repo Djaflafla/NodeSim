@@ -4,8 +4,8 @@ import { Menu } from "./Menu.js"
 import { Workspace } from "./Workspace.js"
 import { Connection } from "./Connection.js"
 import { Connector } from "./Connector.js"
-import type { NestedConnectors } from "./Connection.js"
 import type { ConnectorDict } from "./Connection.js"
+import type { FromConnX } from "./Connection.js"
 
 const BUTTONSECTION = document.getElementById("buttonSection")!
 const NODESPACE = document.getElementById("nodeSpace")!
@@ -18,7 +18,9 @@ export class Renderer {
         Renderer.updateNode(ws)
         Renderer.printLine(ws)
         // console.log(ws.pieceCollection) 
+        console.log("-------------------")
         console.log(ws.cm.connMap)
+        console.log("-------------------")
         
     }
 
@@ -78,7 +80,7 @@ export class Renderer {
         let connSection = html.createElement("div")
         //create button for conn
         Object.entries(node.connectors.input).forEach(([id, conn])=>{
-            let b1 = html.createButton(TEXTFORCONN, ()=>{
+            let b1 = html.createButton(conn.id, ()=>{
                 ws.menu.setSelected(conn.id, ws)
                 Renderer.updateMenu(ws)
             }, {
@@ -88,7 +90,7 @@ export class Renderer {
             connSection.appendChild(b1)
         })
         Object.entries(node.connectors.output).forEach(([id, conn])=>{
-            let b1 = html.createButton(TEXTFORCONN, ()=>{
+            let b1 = html.createButton(conn.id, ()=>{
                 ws.menu.setSelected(conn.id, ws)
                 Renderer.updateMenu(ws)
             }, {
@@ -109,34 +111,20 @@ export class Renderer {
         document.getElementById("connLines")?.replaceChildren()
 
         // Get connection
-        Object.entries(ws.cm.connMap).forEach(([id, conex])=>{
-            looopidou(conex.connectionFlow)
+        Object.entries(ws.cm.connMap).forEach(([id1, conex])=>{
+            let done:string[] = []
+            Object.entries(conex.connectedTo).forEach(([id2, connArray])=>{
+                let conn = ws.getPiece(id2)
+                if (!(conn instanceof Connector)){console.error("not a conn 6543555");return}
+                connArray.forEach(conntor=>{
+                    if (done.includes(conntor.id)){return}
+                    Renderer.print1Line(conn.id, conntor.id)
+                })
+                done.push(id2)
+            })
         })
-        
-        function looopidou (array:NestedConnectors):Connector {
-            let buffer1:Connector[]=[]
-            
+    }   
 
-            for (let elem of array) {
-                if (elem instanceof Connector) {
-                    buffer1.push(elem)
-                }
-                if (Array.isArray(elem)) {
-                    buffer1.push(looopidou(elem))
-                }
-            }
-            while (buffer1.length>1){
-                let c1= buffer1[buffer1.length-1]
-                let c2 = buffer1[buffer1.length-2]
-                if ((c1 instanceof Connector) && (c2 instanceof Connector)){
-                    Renderer.print1Line(c1.id, c2.id)
-                }
-                buffer1.pop()
-            }
-            return buffer1[0]!
-        }
-    }
-    
     static print1Line(id1:string, id2:string) {
         // get but1 pos
         let but1Pos = html.getElement(id1)?.getBoundingClientRect()

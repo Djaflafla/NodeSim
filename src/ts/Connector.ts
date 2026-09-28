@@ -1,7 +1,10 @@
+import { Connection } from "./Connection.js";
+import { UUID } from "./jsUtils.js";
 import { Node } from "./Node.js";
-type connType = "input"|"output"
 
+type connType = "input"|"output"
 const CONNOPTION = ["delConn"]
+
 export class Connector {
     id:string
     type: connType
@@ -10,21 +13,14 @@ export class Connector {
     node:Node
     name:string
     // One Connector = One Connection
-    connectionId: string = ""
+    connection: Connection|undefined
 
     constructor (id:string, node:Node, type:connType) {
         this.id = id
         this.node = node
         this.name = id
         this.type = type
+        // this.connection = new Connection(UUID(), {subs:[this], connectedTo:{[this.id]:[]}})
     }
-
-    // // Spread value from conn to the ones connected to it
-    // spreadValue (connArray:Connector[]) {
-    //     connArray.forEach(conn=>{
-    //         if (this.id == conn.id){return}
-    //         conn.value = this.value
-    //     })
-    // }
 
 }

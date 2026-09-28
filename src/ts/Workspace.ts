@@ -18,7 +18,7 @@ export type pieceCollection = {
 export class Workspace {
     Q:Piece[]=[]
     pieceCollection:pieceCollection = {}
-    cm = new ConnectionManager()
+    cm = new ConnectionManager(this)
     menu=new Menu()
    
 
