@@ -13,14 +13,14 @@ export class Connector {
     node:Node
     name:string
     // One Connector = One Connection
-    connection: Connection|undefined
+    connection: Connection
 
     constructor (id:string, node:Node, type:connType) {
         this.id = id
         this.node = node
         this.name = id
         this.type = type
-        // this.connection = new Connection(UUID(), {subs:[this], connectedTo:{[this.id]:[]}})
+        this.connection = new Connection(UUID(), {subs:[this], connectedTo:{[this.id]:[]}})
     }
 
 }
