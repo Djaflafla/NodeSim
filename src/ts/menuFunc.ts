@@ -19,7 +19,7 @@ export const menuFunc:menuFunc = {
 
         let node = ws.createNode(known?known:"node", input)
         ws.pieceCollection[node.id] = node
-        ws.menu.setSelected(node.id, ws)
+        ws.menu.updateSelected(node.id, ws)
         R.renderWS(ws)
     },
         
@@ -37,7 +37,7 @@ export const menuFunc:menuFunc = {
         if (!ws.menu.selectedPiece){return}
         Node.delNode(ws.menu.selectedPiece, ws)
         ws.menu.inputBar.value=""
-        ws.menu.setSelected("", ws)
+        ws.menu.updateSelected("", ws)
         R.renderWS(ws)
         
     },
@@ -48,22 +48,32 @@ export const menuFunc:menuFunc = {
 
         ws.cm.delConnector(ws.menu.selectedPiece, ws)
         ws.menu.inputBar.value=""
-        ws.menu.setSelected("", ws)
+        ws.menu.updateSelected("", ws)
         R.renderWS(ws)
         // delete from  pC and from conn
     },
 
     "link" : (ws)=>{
-        if (!(Array.isArray(ws.menu.selectedPiece))) {return}
         let conn1 = ws.menu.selectedPiece[0]
         let conn2 = ws.menu.selectedPiece[1]
-        if (!conn1 || !conn2){console.error("missing conn for link");return}
-
+        if (!(conn1 instanceof Connector) || !(conn2 instanceof Connector)){console.error("missing conn for link");return}
         ws.cm.connect(conn1, conn2)
         R.renderWS(ws)
     },
 
+    "unlink": (ws)=>{
+        let conn1 = ws.menu.selectedPiece[0]
+        let conn2 = ws.menu.selectedPiece[1]
+        if (!(conn1 instanceof Connector) || !(conn2 instanceof Connector)){console.error("missing conn for link");return}
+        if (!conn1.connection.subscriber.includes(conn2)){console.error("Not connected")}
+        ws.cm.unconnect(conn1, conn2)
+        R.renderWS(ws)
+    },
+
+
+
     "edit" : (ws)=>{},
+
 
 
 }

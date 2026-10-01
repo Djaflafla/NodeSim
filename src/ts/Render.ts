@@ -18,21 +18,38 @@ export class Renderer {
         Renderer.updateNode(ws)
         Renderer.printLine(ws)
         // console.log(ws.pieceCollection) 
-        console.log("-------------------")
+
         console.log(ws.cm.connMap)
-        console.log("-------------------")
         
     }
 
-    static updateMenu(ws:Workspace) {
+    static updateOption (ws:Workspace){
         BUTTONSECTION.replaceChildren()
         // setFuncList if know value
-
-        // forEach function: create button
+    
+        // create button forEach option
         ws.menu.optList.forEach(opt=>{
             let b1 = html.createButton(opt, ()=>{ws.doOpt(opt)})
             BUTTONSECTION.appendChild(b1)
         })
+
+    }
+
+    static updateInputBar(ws:Workspace){
+        if (ws.menu.selectedPiece.length>0){
+            let str = ""
+            let array1:string[] = []
+            ws.menu.selectedPiece.forEach(p=>{
+                array1.push(p.id)
+            })
+            ws.menu.setInputVal(JSON.stringify(array1))
+            return
+        }
+    }
+
+    static updateMenu(ws:Workspace) {
+        Renderer.updateOption(ws)
+        Renderer.updateInputBar(ws)
     }
 
     // render every nodes
@@ -59,8 +76,7 @@ export class Renderer {
         let button = html.createButton(
             node.name, 
             ()=>{
-                ws.menu.setSelected(node.id, ws)
-                Renderer.updateMenu(ws)
+                ws.menu.updateSelected(node.id, ws)
             }, 
             {className:"nameButton"}
         )
@@ -81,8 +97,7 @@ export class Renderer {
         //create button for conn
         Object.entries(node.connectors.input).forEach(([id, conn])=>{
             let b1 = html.createButton(conn.id, ()=>{
-                ws.menu.setSelected(conn.id, ws)
-                Renderer.updateMenu(ws)
+                ws.menu.updateSelected(conn.id, ws)
             }, {
                 className:"nodeInputConn",
                 id:conn.id
@@ -91,8 +106,7 @@ export class Renderer {
         })
         Object.entries(node.connectors.output).forEach(([id, conn])=>{
             let b1 = html.createButton(conn.id, ()=>{
-                ws.menu.setSelected(conn.id, ws)
-                Renderer.updateMenu(ws)
+                ws.menu.updateSelected(conn.id, ws)
             }, {
                 className:"nodeOutputConn",
                 id:conn.id

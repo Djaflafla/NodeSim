@@ -2,6 +2,7 @@ import { Connector } from "./Connector.js";
 import { Node } from "./Node.js";
 import type {Piece} from "./Workspace.js"
 import type { Workspace } from "./Workspace.js";
+import { Renderer } from "./Render.js";
 
 const INBAR = document.getElementById("userInput") as HTMLInputElement  // input bar Element
 
@@ -9,36 +10,48 @@ export class Menu {
     inputBar= INBAR;
     lastValue:string = ""
     optList:string[] = []
-    selectedPiece: Piece | Connector[] | undefined 
+    selectedPiece: Piece[] = []
 
-
-
-    // set selected piece, set available options, update inputBar
-    setSelected(pieceId:string, ws:Workspace) {
-        this.optList= []
-    
-        let p:Node|Connector|undefined = ws.getPiece(pieceId)
-        if (!p) {
-            this.selectedPiece=undefined;
-            pieceId==""?this.optList=[]:this.optList= ["newNode"]
-            return
+    updateSelected(input:string, ws:Workspace){
+        if (input===""){
+            this.setInputVal("")
+            this.optList=[]
+            return Renderer.updateMenu(ws)
         }
-        if (this.selectedPiece instanceof Connector && p instanceof Connector){
-
-            this.selectedPiece = [this.selectedPiece, p]
-
-            let a = this.selectedPiece[0]?.name?this.selectedPiece[0].name:this.selectedPiece[0]?.id
-            let b = this.selectedPiece[1]?.name?this.selectedPiece[1].name:this.selectedPiece[1]?.id
-            this.inputBar.value = `${a}, ${b}` 
-            this.optList=["link"]
-            return
+        
+        let inputBarPiece = ws.getPiece(input)
+        
+        if (!inputBarPiece) {
+            this.optList= ["newNode"]
+            return Renderer.updateMenu(ws)
         }
-        this.selectedPiece=p
-        this.optList=p.menuOption
-        this.inputBar.value = this.selectedPiece.name?this.selectedPiece.name:this.selectedPiece.id
+        
+        
+        if (this.selectedPiece.length===1) {
+            let sp = this.selectedPiece
+            if (inputBarPiece instanceof Connector && sp[0] instanceof Connector){
+                sp.push(inputBarPiece)
+                if (sp[0].connection.connectedTo[sp[0].id]?.includes(sp[1] as Connector)){
+                    this.optList = ["unlink"]
+                } else {this.optList = ["link"]}
+                return Renderer.updateMenu(ws)
+            }
+           this.selectedPiece = []
+        }
+
+        if (this.selectedPiece.length===0 || this.selectedPiece.length===2){
+            this.selectedPiece = [inputBarPiece]
+            this.optList = inputBarPiece.menuOption
+            return Renderer.updateMenu(ws)
+        }
+        console.error("Why the fuck Am I here")
     }
 
     getInputVal () {
         return INBAR.value
+    }
+
+    setInputVal (value:string) {
+        INBAR.value = value
     }
 }

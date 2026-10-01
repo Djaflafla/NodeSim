@@ -27,7 +27,7 @@ export class Node {
         this.id = id
         this.type = type
         this.run = func
-        this.name = type
+        this.name = id
     }
 
     // delete node and its connectors from pieceCollection, connectionMap
