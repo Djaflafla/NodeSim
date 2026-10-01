@@ -52,25 +52,5 @@ export class Workspace {
         }
     }
 
-    // create piece. add Conn, give Func, give ID
-    createNode:(type:nodeType, name?:string)=>Node|InputNode = (type, name)=> {
-        let newN:Node|InputNode
-        let id = UUID()
-        let func = getFunction(type)
-        
-        if (type=="input"){
-            newN = new InputNode (id, func, name)
-            if (newN instanceof InputNode){
-            }
-            
-        } else if (type=="output"){
-            newN = new OutputNode (id, func, name)
-        } else {
-            newN = new Node (id, type, func, name)
-        }
-        
-        newN.addConn(this, getNbConn(type))
-        return newN
-
-    }
+    
 }

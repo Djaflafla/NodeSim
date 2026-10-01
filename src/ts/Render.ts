@@ -17,9 +17,6 @@ export class Renderer {
         Renderer.updateMenu(ws)
         Renderer.updateNode(ws)
         Renderer.printLine(ws)
-        // console.log(ws.pieceCollection) 
-
-        console.log(ws.cm.connMap)
         
     }
 
@@ -93,22 +90,13 @@ export class Renderer {
         }
         
 
-        let connSection = html.createElement("div")
+        let connSection = html.createElement("div", {className:"connSection"})
         //create button for conn
-        Object.entries(node.connectors.input).forEach(([id, conn])=>{
+        node.connectors.forEach((conn)=>{
             let b1 = html.createButton(conn.id, ()=>{
                 ws.menu.updateSelected(conn.id, ws)
             }, {
-                className:"nodeInputConn",
-                id:conn.id
-            })
-            connSection.appendChild(b1)
-        })
-        Object.entries(node.connectors.output).forEach(([id, conn])=>{
-            let b1 = html.createButton(conn.id, ()=>{
-                ws.menu.updateSelected(conn.id, ws)
-            }, {
-                className:"nodeOutputConn",
+                className:"connButton",
                 id:conn.id
             })
             connSection.appendChild(b1)

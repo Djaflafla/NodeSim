@@ -36,6 +36,10 @@ export class Connection {
 
     }
 
+    removeConnFromConnection(){
+
+    }
+
     setValue (value:string) {
         this.value = value
     }

@@ -25,7 +25,7 @@ export class ConnectionManager{
 
         let connexion1 = conn1.connection
         let connexion2 = conn2.connection
-        if (connexion1.id == connexion2.id) {console.error("both conn are the same");return}
+        if (connexion1.id == connexion2.id) {console.error("both conn are in the same connection");return}
 
         connexion1.subscriber.forEach(conn=>{connexion2.subscriber.push(conn); conn.connection=connexion2})
         connexion1.subscriber = []
@@ -99,16 +99,5 @@ export class ConnectionManager{
         }
 
         
-    }
-    
-    
-
-    delConnector(connector:Connector, ws:Workspace) {
-        // del from node
-        // del from connection
-        // Kill connection if dead
-        // clean connMap prn
-        // del from pieceCollection
-
     }
 }

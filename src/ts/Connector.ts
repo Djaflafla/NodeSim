@@ -2,7 +2,7 @@ import { Connection } from "./Connection.js";
 import { UUID } from "./jsUtils.js";
 import { Node } from "./Node.js";
 
-type connType = "input"|"output"
+type connType = "input"|"output"|"conn"
 const CONNOPTION = ["delConn"]
 
 export class Connector {
@@ -10,7 +10,7 @@ export class Connector {
     type: connType
     value:string = "noValue"
     menuOption = CONNOPTION
-    node:Node
+    node:Node|undefined
     name:string
     // One Connector = One Connection
     connection: Connection
@@ -21,6 +21,10 @@ export class Connector {
         this.name = id
         this.type = type
         this.connection = new Connection(UUID(), {subs:[this], connectedTo:{[this.id]:[]}})
+    }
+
+    getConnectedTo():Connector[]{
+        return this.connection.connectedTo[this.id]!
     }
 
 }

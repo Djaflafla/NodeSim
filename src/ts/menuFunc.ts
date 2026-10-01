@@ -17,7 +17,7 @@ export const menuFunc:menuFunc = {
         let known
         if (isNodeType(input)){ known = input}
 
-        let node = ws.createNode(known?known:"node", input)
+        let node = Node.createNode(known?known:"node", ws, input)
         ws.pieceCollection[node.id] = node
         ws.menu.updateSelected(node.id, ws)
         R.renderWS(ws)
@@ -33,24 +33,21 @@ export const menuFunc:menuFunc = {
     // },
     
     "delNode":(ws)=>{
-        if (Array.isArray(ws.menu.selectedPiece)){console.error("is an array in \"delNode\"");return}
-        if (!ws.menu.selectedPiece){return}
-        Node.delNode(ws.menu.selectedPiece, ws)
-        ws.menu.inputBar.value=""
+        if (!(ws.menu.selectedPiece[0] instanceof Node)){console.error("is not a node in delNode");return}
+       
+        Node.delNode(ws.menu.selectedPiece[0], ws)
         ws.menu.updateSelected("", ws)
         R.renderWS(ws)
         
     },
 
     "delConn" : (ws)=>{
-        if (!ws.menu.selectedPiece){console.error("no selected piece for delConn");return}
-        if (!(ws.menu.selectedPiece instanceof Connector)){console.error("piece is not a connector");return}
+        if (!(ws.menu.selectedPiece[0] instanceof Connector)){console.error("piece is not a connector");return}
 
-        ws.cm.delConnector(ws.menu.selectedPiece, ws)
-        ws.menu.inputBar.value=""
+        // Del conn from conn.node
+        ws.menu.selectedPiece[0].node!.delConn(ws.menu.selectedPiece[0], ws)
         ws.menu.updateSelected("", ws)
         R.renderWS(ws)
-        // delete from  pC and from conn
     },
 
     "link" : (ws)=>{

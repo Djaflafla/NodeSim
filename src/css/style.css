@@ -33,7 +33,7 @@
 
 .nodeDiv {
     height: 150px;
-    width: 150px;
+    width: 300px;
     border: 1px, solid, black;
 }
 
@@ -49,6 +49,12 @@
     margin: 0px;
 }
 
-.nodeConn {
+.connButton {
     margin: 10px;
+    display: inline-block;
+}
+
+.connSection {
+    display: block;
+    background-color: aqua;
 }

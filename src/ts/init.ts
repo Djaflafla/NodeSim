@@ -15,6 +15,7 @@ export function init(ws:Workspace){
 
     const clockBut = document.getElementById("clock")
     clockBut?.addEventListener("click", ()=>{
+        
         Renderer.renderWS(ws)
     })
 
