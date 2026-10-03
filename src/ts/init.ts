@@ -2,7 +2,7 @@ import { Renderer } from "./Render.js"
 import type { Workspace } from "./Workspace.js"
 import { Node } from "./Node.js"
 import { Connector } from "./Connector.js"
-import { blabla } from "./main.js"
+// import { blabla } from "./main.js"
 
 export function init(ws:Workspace){
 
@@ -24,12 +24,12 @@ export function init(ws:Workspace){
         if (ws.Q.length>0){ws.runNextinQ()}
         
 
-        let [input1, input2, output] = blabla
-        console.log("///////////////////////")
-        console.log(input1!.connectors[0])
-        console.log(input2!.connectors[0])
-        console.log(output!.connectors[0])
-        console.log(output!.connectors[0]?.connection)
+        // let [input1, input2, output] = blabla
+        // console.log("///////////////////////")
+        // console.log(input1!.connectors[0])
+        // console.log(input2!.connectors[0])
+        // console.log(output!.connectors[0])
+        // console.log(output!.connectors[0]?.connection)
 
     })
 }

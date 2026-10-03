@@ -22,7 +22,6 @@ export class Renderer {
 
     static updateOption (ws:Workspace){
         BUTTONSECTION.replaceChildren()
-        // setFuncList if know value
     
         // create button forEach option
         ws.menu.optList.forEach(opt=>{

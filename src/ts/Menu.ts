@@ -8,10 +8,11 @@ const INBAR = document.getElementById("userInput") as HTMLInputElement  // input
 
 export class Menu {
     inputBar= INBAR;
-    lastValue:string = ""
     optList:string[] = []
     selectedPiece: Piece[] = []
 
+
+    // update slectedPiece with given input
     updateSelected(input:string, ws:Workspace){
         if (input===""){
             this.setInputVal("")

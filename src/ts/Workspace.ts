@@ -17,13 +17,12 @@ export type pieceCollection = {
 
 
 export class Workspace {
+    cm = new ConnectionManager(this)
+    menu=new Menu()
+    pieceCollection:pieceCollection = {}
     Q:Node[]=[]
     startNode:Node[]=[]
     checkInputUpdate:boolean= false
-    pieceCollection:pieceCollection = {}
-    cm = new ConnectionManager(this)
-    menu=new Menu()
-    updatedConnection:Connection[]=[]
    
 
     // initial nodes(inputs)
