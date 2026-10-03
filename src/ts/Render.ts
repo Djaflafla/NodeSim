@@ -34,7 +34,6 @@ export class Renderer {
 
     static updateInputBar(ws:Workspace){
         if (ws.menu.selectedPiece.length>0){
-            let str = ""
             let array1:string[] = []
             ws.menu.selectedPiece.forEach(p=>{
                 array1.push(p.id)

@@ -96,8 +96,6 @@ export class ConnectionManager{
                 newC = returnNewConnection(newC, oldC, conn)
             })
             return newC
-        }
-
-        
+        }   
     }
 }

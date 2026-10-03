@@ -1,6 +1,6 @@
 
 import type { Node, nodeType } from "./Node.js"
-import { InputNode } from "./Node.js"
+import { InputNode, OutputNode } from "./Node.js"
 import { Renderer } from "./Render.js"
 
 type NF = {
@@ -52,19 +52,18 @@ export const nodeFunction = {
         let conn1 = node.connectors[0]
         if (conn1&&node instanceof InputNode){
             conn1.value = node.inputBar.value
-
         }
     }],
     
     "output" : [1, 0, (node)=>{
-        // let a = node.connectors[0]
-        // if (!a){return}
-        // if (node.outputP) {node.outputP.textContent = `output: ${a.value}`}
+        let a = node.connectors[0]
+        if (!a || !(node instanceof OutputNode)){console.error("output node fuckerie");return}
+        node.setOutput(a.value)
     }],
     
     "wire" : [1, 1, (node)=>{
         if (node.connectors[0]&&node.connectors[1]){
-            node.connectors[0].value = node.connectors[1].value
+            node.connectors[1].value = node.connectors[0].value
         }
     }],
     
@@ -75,10 +74,11 @@ export const nodeFunction = {
         let c = node.connectors[2]
         if (!a || !b || !c){console.error("missing conn for addFunc"); return}
 
-        if (typeof a === 'number' && typeof b === 'number') {
-            let answ = a+b
-            c.value = answ.toString()
-        }
+        let avalue = Number.parseInt(a.value)
+        let bvalue = Number.parseInt(b.value)
+        if (!Number.isFinite(avalue) || !Number.isFinite(bvalue) ){console.error("cannot add because not a number");return}
+
+        c.value = (bvalue+avalue).toString()
     }],
 } satisfies NF
 
@@ -89,9 +89,9 @@ export function getFunction(funcKey:nodeType) {
 }
 
 // Returns value of number of connector for node
-export function getNbConn(funcKey:nodeType):number {
+export function getNbConn(funcKey:nodeType):[number, number] {
+    if (!nodeFunction[funcKey]) {console.error(`no value for key (nodeFunc). Key: ${funcKey}`);return [0, 0]}
     let nbIn = nodeFunction[funcKey][0]
     let nbOut = nodeFunction[funcKey][1]
-        if (!nodeFunction[funcKey]) {console.error(`no value for key (nodeFunc). Key: ${funcKey}`);return 0}
-        return nbIn+nbOut
+    return [nbIn, nbOut]
 }

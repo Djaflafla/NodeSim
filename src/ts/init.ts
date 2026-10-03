@@ -2,6 +2,7 @@ import { Renderer } from "./Render.js"
 import type { Workspace } from "./Workspace.js"
 import { Node } from "./Node.js"
 import { Connector } from "./Connector.js"
+import { blabla } from "./main.js"
 
 export function init(ws:Workspace){
 
@@ -12,24 +13,24 @@ export function init(ws:Workspace){
 
     }):console.error("no input bar")
 
+    
 
     const clockBut = document.getElementById("clock")
     clockBut?.addEventListener("click", ()=>{
+        if (ws.checkInputUpdate) {
+            ws.initQ()
+            ws.checkInputUpdate=false
+        }
+        if (ws.Q.length>0){ws.runNextinQ()}
         
-        Renderer.renderWS(ws)
+
+        let [input1, input2, output] = blabla
+        console.log("///////////////////////")
+        console.log(input1!.connectors[0])
+        console.log(input2!.connectors[0])
+        console.log(output!.connectors[0])
+        console.log(output!.connectors[0]?.connection)
+
     })
-
 }
-
-        // Object.entries(ws.pieceCollection).forEach(([key, piece])=>{
-        //     if (piece instanceof Node) {
-        //         piece.run(piece)
-        //     }
-        //     if (piece instanceof Connector){
-        //         if (!piece.connectionId){return}
-        //         let connArray = ws.cm[piece.connectionId]
-        //         if (!connArray){return}
-        //         piece.spreadValue(connArray)
-        //     }
-        // })
     
