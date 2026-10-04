@@ -13,11 +13,6 @@ export type connMap = {
 
 export class ConnectionManager{
     connMap:connMap={}
-    ws:Workspace
-
-    constructor (ws:Workspace){
-        this.ws = ws
-    }
 
 
     // 1 into 2
@@ -97,5 +92,9 @@ export class ConnectionManager{
             })
             return newC
         }   
+    }
+
+    static updateConnection (){
+
     }
 }

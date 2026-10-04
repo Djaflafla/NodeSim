@@ -8,29 +8,11 @@ export function init(ws:Workspace){
 
     // listen for update of input bar
     ws.menu.inputBar? ws.menu.inputBar.addEventListener("input", ()=>{
-        ws.menu.selectedPiece=[]
-        ws.menu.updateSelected(ws.menu.getInputVal(), ws)
-
+        ws.menu.newInput(ws)
     }):console.error("no input bar")
 
     
-
     const clockBut = document.getElementById("clock")
-    clockBut?.addEventListener("click", ()=>{
-        if (ws.checkInputUpdate) {
-            ws.initQ()
-            ws.checkInputUpdate=false
-        }
-        if (ws.Q.length>0){ws.runNextinQ()}
-        
-
-        // let [input1, input2, output] = blabla
-        // console.log("///////////////////////")
-        // console.log(input1!.connectors[0])
-        // console.log(input2!.connectors[0])
-        // console.log(output!.connectors[0])
-        // console.log(output!.connectors[0]?.connection)
-
-    })
+    clockBut?.addEventListener("click", ()=>{ws.qm.clockAction()})
 }
     

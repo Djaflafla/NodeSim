@@ -17,6 +17,7 @@ export class Renderer {
         Renderer.updateMenu(ws)
         Renderer.updateNode(ws)
         Renderer.printLine(ws)
+        console.log(ws.pieceCollection)
         
     }
 
@@ -32,14 +33,12 @@ export class Renderer {
     }
 
     static updateInputBar(ws:Workspace){
-        if (ws.menu.selectedPiece.length>0){
-            let array1:string[] = []
-            ws.menu.selectedPiece.forEach(p=>{
-                array1.push(p.id)
-            })
-            ws.menu.setInputVal(JSON.stringify(array1))
-            return
-        }
+        if (ws.menu.selectedPiece.length<1){return}
+        let array1:string[] = []
+        ws.menu.selectedPiece.forEach(p=>{
+            array1.push(p.id)
+        })
+        ws.menu.setInputVal(JSON.stringify(array1))
     }
 
     static updateMenu(ws:Workspace) {

@@ -2,7 +2,7 @@ import { Connector } from "./Connector.js";
 import type { Workspace } from "./Workspace.js";
 import { nodeFunction, getFunction } from "./nodeFunction.js";
 import {UUID} from "./jsUtils.js"
-import type { Connection, ConnectorDict } from "./Connection.js";
+import { Connection, type ConnectorDict } from "./Connection.js";
 import { createButton, createElement } from "./htmlUtils.js";
 import { getNbConn } from "./nodeFunction.js";
 import type { ConnectionManager } from "./ConnectionManager.js";
@@ -23,13 +23,13 @@ export class Node {
     connectors: Connector[]=[]
     name:string
     menuOption = NODEOPTION
-    run:(node:Node)=>void 
+    run:()=>void 
     ws:Workspace
 
     constructor (id:string, type: nodeType, func:(node:Node)=>void, ws:Workspace, name?:string) {
         this.id = id
         this.type = type
-        this.run = func
+        this.run = ()=>func(this)
         this.name = id
         this.ws = ws
     }
@@ -37,7 +37,7 @@ export class Node {
     // delete node and its connectors from pieceCollection, connectionMap
     // delete conn from pieceCollection, node.connectors, connectionMap
     static delNode(piece:Node, ws:Workspace) {
-        if (ws.startNode.includes(piece)){ws.startNode.splice(ws.startNode.indexOf(piece), 1)}
+        if (ws.qm.startingNodes.includes(piece)){ws.qm.startingNodes.splice(ws.qm.startingNodes.indexOf(piece), 1)}
         // Del conn properly
         piece.connectors.forEach(conn=>{
             piece.delConn(conn, ws)
@@ -97,8 +97,8 @@ export class Node {
         
         if (type=="input"){
             newN = new InputNode (id, func, ws, name)
-            ws.startNode.push(newN)
-            ws.checkInputUpdate = true
+            ws.qm.startingNodes.push(newN)
+            ws.qm.checkInputUpdate = true
             
         } else if (type=="output"){
             newN = new OutputNode (id, func, ws, name)
@@ -119,26 +119,15 @@ export class Node {
         })
     }
 
-    // returns an updated connection[]
-    updateConnection():Connection[]{
-        let conexArray:Connection[] = []
+    
+    getOutputConnections(){
+        let connection:Connection[] = []
         this.connectors.forEach(conn=>{
             if (conn.type==="output"){
-                conn.connection.value = conn.value
-                conexArray.push(conn.connection)
+                connection.push(conn.connection)
             }
         })
-        return conexArray
-    }
-
-    getUpdatedConnection(){
-        let conexArray:Connection[] = []
-        this.connectors.forEach(conn=>{
-            if (conn.type==="output"){
-                conexArray.push(conn.connection)
-            }
-        })
-        return conexArray
+        return connection
     }
 }
 
@@ -154,9 +143,9 @@ export class InputNode extends Node {
         }) as HTMLInputElement
 
         this.setButton = createButton("set", ()=>{
-            this.run(this)
-            this.updateConnection()
-            this.ws.checkInputUpdate = true
+            this.run()
+            Connection.updateConnection(this)
+            this.ws.qm.checkInputUpdate = true
         }, 
             {className:"inputSetButton"}
         )

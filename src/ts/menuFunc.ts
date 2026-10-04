@@ -22,6 +22,13 @@ export const menuFunc:menuFunc = {
         ws.menu.updateSelected(node.id, ws)
         R.renderWS(ws)
     },
+
+    "addInput": (ws)=>{
+        let node = Node.createNode('input', ws)
+        ws.pieceCollection[node.id] = node
+        ws.menu.updateSelected(node.id, ws)
+        R.renderWS(ws)
+    },
         
     // "newConn" : (ws)=>{
     // let sp = ws.menu.selectedPiece

@@ -1,3 +1,4 @@
+import { Connection } from "./Connection.js"
 import { Node } from "./Node.js"
 import { Renderer } from "./Render.js"
 import { Workspace } from "./Workspace.js"
@@ -28,8 +29,32 @@ Renderer.renderWS(ws)
 
 // lets customize!
 
+// system inputs
+// button to add input
+// presets
+// save ws
+// input types(str, bool, number)
 
 
+// remove adding a blank node
+// remove edit node
 
 
 // work on rendering someday
+
+
+// ws
+// Node
+// Connector
+// Connection
+// Input
+// Output
+// Menu
+
+
+// Menu:
+// add known nodes
+// add input
+// add output
+// save
+// presets

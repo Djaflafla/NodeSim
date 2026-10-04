@@ -1,6 +1,7 @@
 import { ConnectionManager } from "./ConnectionManager.js"
 import { Connector } from "./Connector.js"
 import type { init } from "./init.js"
+import type { Node } from "./Node.js"
 
 export type ConnectorDict = {[id:string]:Connector}
 export type FromConnX = {[connectorId:string]:Connector[]}
@@ -36,14 +37,40 @@ export class Connection {
 
     }
 
-    removeConnFromConnection(){
-
-    }
-
     setValue (value:string) {
         this.value = value
     }
 
+    getInputs(){
+        let inputs:Connector[] = []
+        this.subscriber.forEach(conn=>{
+            if (conn.type==="input"){inputs.push(conn)}
+        })
+        return inputs
+    }
+
+    static updateConnection(node:Node){
+        let updatedConnection:Connection[] = []
+        node.connectors.forEach(conn=>{
+            if (conn.type==="output"){
+                conn.connection.setValue(conn.value)
+                updatedConnection.push(conn.connection)
+            }
+        })
+        return updatedConnection
+    }
+    
+
+    static getNextNodes(conexArray:Connection[]):Node[]{
+        let nodeArray:Node[] = []
+        conexArray.forEach(conex=>{
+            conex.getInputs().forEach(inputs=>{
+                    if (!inputs.node){console.error("connector doesnt have a node");return}
+                    nodeArray.push(inputs.node)
+                })
+        })
+        return nodeArray
+    }
 }
 
 

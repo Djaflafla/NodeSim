@@ -5,25 +5,31 @@ import type { Workspace } from "./Workspace.js";
 import { Renderer } from "./Render.js";
 
 const INBAR = document.getElementById("userInput") as HTMLInputElement  // input bar Element
-
+const BASEOPTION:string[] = ["addInput", "addOutput"]
+    
 export class Menu {
     inputBar= INBAR;
-    optList:string[] = []
+    optList:string[] = BASEOPTION
     selectedPiece: Piece[] = []
 
+    newInput(ws:Workspace){
+        this.selectedPiece=[]
+        this.updateSelected(this.getInputVal(), ws)
+    }
 
     // update slectedPiece with given input
     updateSelected(input:string, ws:Workspace){
         if (input===""){
             this.setInputVal("")
-            this.optList=[]
+            this.optList=BASEOPTION
+            this.selectedPiece=[]
             return Renderer.updateMenu(ws)
         }
         
         let inputBarPiece = ws.getPiece(input)
         
         if (!inputBarPiece) {
-            this.optList= ["newNode"]
+            this.optList=BASEOPTION
             return Renderer.updateMenu(ws)
         }
         
