@@ -5,8 +5,14 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "serve": "serve ",
+    "build": "tsc",
+    "dev": "tsc --watch"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "serve": "^14.2.6",
+    "typescript": "^7.0.2"
+  }
 }
