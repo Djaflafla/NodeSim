@@ -2,59 +2,49 @@ import { Connection } from "./Connection.js"
 import { Node } from "./Node.js"
 import { Renderer } from "./Render.js"
 import { Workspace } from "./Workspace.js"
-import { init } from "./init.js"
+import { initWS , initMM} from "./init.js"
 
-const ws = new Workspace()
-init(ws)
-
-
-// let input1 = Node.createNode("input", ws)
-// let input2 = Node.createNode("input", ws)
-// ws.pieceCollection[input1.id] = input1
-// ws.pieceCollection[input2.id] = input2
-// let add = Node.createNode("add", ws)
-// ws.pieceCollection[add.id] = add
-// let output = Node.createNode("output", ws)
-// ws.pieceCollection[output.id] = output
-
-// export const blabla = [input1, input2, output]
-
-Renderer.renderWS(ws)
-
-
+const renderer = new Renderer()
+document.body.appendChild(renderer.mainMenu)
+document.body.appendChild(renderer.ws)
 
 
 // ---------------------------------------------
 
+// renderMainMenu
+// MainMenuFunc
+// css mainMenu
+// Render WS
+// css WS
 
-// lets customize!
+
 
 // system inputs
-// button to add input
 // presets
 // save ws
 // input types(str, bool, number)
-
-
 // remove adding a blank node
 // remove edit node
+// redo naming
 
 
-// work on rendering someday
 
-
-// ws
-// Node
-// Connector
-// Connection
-// Input
-// Output
-// Menu
-
-
-// Menu:
+// simMenu:
 // add known nodes
 // add input
 // add output
 // save
 // presets
+
+
+// mainMenuFunc, WS, wsmenu
+
+// initiating:
+// if nodes on workbench or other initial states
+
+// on the fly vs prebuild:
+// sections (div)
+// buttons
+// nodes
+// library
+// mainmenu

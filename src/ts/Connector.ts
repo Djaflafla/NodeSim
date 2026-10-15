@@ -1,15 +1,16 @@
 import { Connection } from "./Connection.js";
 import { UUID } from "./jsUtils.js";
+import type { PossibleMenuFunc } from "./menuFunc.js";
 import { Node } from "./Node.js";
 
 type connType = "input"|"output"|"conn"
-const CONNOPTION = ["delConn"]
+const CONNOPTION = ["delConn"] as PossibleMenuFunc[]
 
 export class Connector {
     id:string
     type: connType
     value:string = "noValue"
-    menuOption = CONNOPTION
+    menuOption:PossibleMenuFunc[] = CONNOPTION
     node:Node|undefined
     name:string
     // One Connector = One Connection

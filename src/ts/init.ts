@@ -1,10 +1,12 @@
 import { Renderer } from "./Render.js"
-import type { Workspace } from "./Workspace.js"
+import { Workspace } from "./Workspace.js"
 import { Node } from "./Node.js"
 import { Connector } from "./Connector.js"
 // import { blabla } from "./main.js"
 
-export function init(ws:Workspace){
+export function initWS(){
+
+    let ws = new Workspace()
 
     // listen for update of input bar
     ws.menu.inputBar? ws.menu.inputBar.addEventListener("input", ()=>{
@@ -14,5 +16,17 @@ export function init(ws:Workspace){
     
     const clockBut = document.getElementById("clock")
     clockBut?.addEventListener("click", ()=>{ws.qm.clockAction()})
+
+    return ws
 }
+
+export function initMM():{
+    // create html
+
+    // create logic
+    // initial state: shown
+
+
+    // print main menu
     
+}

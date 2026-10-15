@@ -1,13 +1,8 @@
 import { Connector } from "./Connector.js"
 import { Node, InputNode, OutputNode} from "./Node.js"
-import type {nodeType } from "./Node.js"
-import {Renderer as R, Renderer} from "./Render.js"
 import { Menu } from "./Menu.js"
-import { UUID } from "./jsUtils.js"
-import { menuFunc } from "./menuFunc.js"
+import { menuFunc, type PossibleMenuFunc } from "./menuFunc.js"
 import { ConnectionManager } from "./ConnectionManager.js"
-import { nodeFunction, getFunction, getNbConn } from "./nodeFunction.js";
-import type { Connection } from "./Connection.js"
 import { QManager } from "./QManager.js"
 
 export type Piece = Node|Connector
@@ -18,13 +13,21 @@ export type pieceCollection = {
 
 
 export class Workspace {
-    cm = new ConnectionManager()
-    menu = new Menu()
-    qm = new QManager()
-    pieceCollection:pieceCollection = {}
+
+    cm: ConnectionManager
+    menu: Menu
+    qm: QManager
+    pieceCollection: pieceCollection
+
+    constructor (){
+        this.cm = new ConnectionManager()
+        this.menu = new Menu()
+        this.qm = new QManager()
+        this.pieceCollection = {}
+    }
    
 
-    doOpt(opt:string){
+    doOpt(opt:PossibleMenuFunc){
         let func = menuFunc[opt]
         if (!func) {console.error(`no function for option: ${opt}`);return}
         func(this)

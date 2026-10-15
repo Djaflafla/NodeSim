@@ -6,12 +6,12 @@ import { nodeFunction } from "./nodeFunction.js"
 import { isNodeType } from "./jsUtils.js"
 import { Connector } from "./Connector.js"
 
-export type menuFunc = {
+export type MenuFunc = {
     [option:string]:(ws:Workspace)=>void
 }
 
 // Function for option in Menu
-export const menuFunc:menuFunc = {
+export const menuFunc = {
     "newNode": (ws)=>{
         let input = ws.menu.getInputVal()
         let known
@@ -28,6 +28,10 @@ export const menuFunc:menuFunc = {
         ws.pieceCollection[node.id] = node
         ws.menu.updateSelected(node.id, ws)
         R.renderWS(ws)
+    },
+
+    "addOutput": ()=>{
+        
     },
         
     // "newConn" : (ws)=>{
@@ -80,4 +84,6 @@ export const menuFunc:menuFunc = {
 
 
 
-}
+} satisfies MenuFunc
+
+export type PossibleMenuFunc = keyof typeof menuFunc
