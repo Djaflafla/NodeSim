@@ -47,11 +47,12 @@ export const nodeFunction = {
         a.value == "1"?b.value="0":b.value="1"
     }],
     
-    "input" : [0, 1, (node)=>{
+    "input" : [1, 1, (node)=>{
 
         let conn1 = node.connectors[0]
-        if (conn1&&node instanceof InputNode){
-            conn1.value = node.inputBar.value
+        let conn2 = node.connectors[1]
+        if (conn1&&conn2){
+            conn2.value = conn1.value
         }
     }],
     

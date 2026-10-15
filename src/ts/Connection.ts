@@ -1,6 +1,5 @@
 import { ConnectionManager } from "./ConnectionManager.js"
 import { Connector } from "./Connector.js"
-import type { init } from "./init.js"
 import type { Node } from "./Node.js"
 
 export type ConnectorDict = {[id:string]:Connector}

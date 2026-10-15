@@ -1,20 +1,37 @@
 import { Connector } from "./Connector.js";
-import { Node } from "./Node.js";
 import type {Piece} from "./Workspace.js"
 import type { Workspace } from "./Workspace.js";
 import { Renderer } from "./Render.js";
+import type { PossibleMenuFunc } from "./menuFunc.js";
+import { dict } from "./constImport.js";
 
-const INBAR = document.getElementById("userInput") as HTMLInputElement  // input bar Element
-const BASEOPTION:string[] = ["addInput", "addOutput"]
+
+const INBAR = document.getElementById(dict.WSMENUINPUTID) as HTMLInputElement  // input bar Element
+
+
+const BASEOPTION = ["addInput", "addOutput"] satisfies PossibleMenuFunc[]
     
 export class Menu {
-    inputBar= INBAR;
-    optList:string[] = BASEOPTION
+    inputBar:HTMLInputElement;
+    optList:PossibleMenuFunc[] = BASEOPTION
     selectedPiece: Piece[] = []
+    constructor(){
+        this.inputBar  =INBAR
+    }
 
     newInput(ws:Workspace){
         this.selectedPiece=[]
         this.updateSelected(this.getInputVal(), ws)
+    }
+
+    mainMenu(){
+        // Show option for main menu
+        // wait for user
+
+        // build page for mainmenu
+
+        // New
+        // Select
     }
 
     // update slectedPiece with given input

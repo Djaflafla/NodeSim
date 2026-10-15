@@ -5,9 +5,9 @@ import {UUID} from "./jsUtils.js"
 import { Connection, type ConnectorDict } from "./Connection.js";
 import { createButton, createElement } from "./htmlUtils.js";
 import { getNbConn } from "./nodeFunction.js";
-import type { ConnectionManager } from "./ConnectionManager.js";
+import type { PossibleMenuFunc } from "./menuFunc.js";
 
-const NODEOPTION = ["newNode", "edit", "delNode"]
+const NODEOPTION = ["newNode", "edit", "delNode"] as PossibleMenuFunc[]
 
 // export const POSSNODE = ["and", "or", "not", "input", "output", "wire", "node", "add"] as const
 // export type nodeType = typeof POSSNODE [number]
@@ -22,7 +22,7 @@ export class Node {
     type:nodeType
     connectors: Connector[]=[]
     name:string
-    menuOption = NODEOPTION
+    menuOption:PossibleMenuFunc[] = NODEOPTION
     run:()=>void 
     ws:Workspace
 
@@ -119,7 +119,6 @@ export class Node {
         })
     }
 
-    
     getOutputConnections(){
         let connection:Connection[] = []
         this.connectors.forEach(conn=>{
@@ -143,6 +142,7 @@ export class InputNode extends Node {
         }) as HTMLInputElement
 
         this.setButton = createButton("set", ()=>{
+            this.connectors[0]!.value = this.inputBar.value
             this.run()
             Connection.updateConnection(this)
             this.ws.qm.checkInputUpdate = true

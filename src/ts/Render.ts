@@ -1,17 +1,77 @@
 import * as html from "./htmlUtils.js"
 import { Node,InputNode, OutputNode } from "./Node.js"
-import { Menu } from "./Menu.js"
 import { Workspace } from "./Workspace.js"
 import { Connection } from "./Connection.js"
 import { Connector } from "./Connector.js"
 import type { ConnectorDict } from "./Connection.js"
 import type { FromConnX } from "./Connection.js"
+import { mainMenuFunc, type possibleMainMenuFunc } from "./MainMenuFunc.js"
+import type { PossibleMenuFunc } from "./menuFunc.js"
+import { dict } from "./constImport.js"
 
-const BUTTONSECTION = document.getElementById("buttonSection")!
-const NODESPACE = document.getElementById("nodeSpace")!
-const TEXTFORCONN = "∆"
+
 
 export class Renderer {
+    mainMenu:HTMLElement
+    ws:HTMLElement
+
+    constructor(){
+        this.mainMenu = Renderer.buildMainMenu()
+        this.ws = Renderer.buildWS()
+    }
+
+    // make difference between build and render
+    static buildMainMenu():HTMLElement {
+        const mainMenuDiv = html.createElement("div", {id:dict.MAINMENUDIVID})
+        const mainMenuButtonDiv = html.createElement("div", {id:dict.MAINMENUBUTTONDIVID})
+        
+        dict.MAINMENUOPTION.forEach((opt)=>{
+            let btn = html.createButton(opt, mainMenuFunc[opt], {className:dict.MAINMENUBUTTONCLASS})
+            
+            mainMenuButtonDiv.appendChild(btn)
+            console.log(btn.className)
+        })
+
+        mainMenuDiv.appendChild(mainMenuButtonDiv)
+        return mainMenuDiv
+        
+    }
+    static buildWS(){
+        // build menu section
+        // build workBench
+        // make svg for lines
+        let wsDiv = html.createElement("div", {id:dict.WSDIVID})
+        let wsMenu =this.buildWsMenu()
+        let workbenchDiv = this.buildWorkbench()
+        let connLinesSVG = html.createElement("svg", {id:dict.CONNLINESSVGID})
+        wsDiv.appendChild(wsMenu)
+        wsDiv.appendChild(workbenchDiv)
+        wsDiv.appendChild(connLinesSVG)
+
+        return wsDiv
+        
+    }
+
+    static buildWsMenu(){
+        let wsMenu = html.createElement("div", {id:dict.WSMENUID})
+        let clockButton = html.createElement("button", {id:dict.CLOCKBUTTONID})
+        let inputBar = html.createElement("input", {id:dict.WSMENUINPUTID})
+        let buttonDiv = html.createElement("div", {id:dict.WSMENUBUTTONDIVID})
+        wsMenu.appendChild(clockButton)
+        wsMenu.appendChild(inputBar)
+        wsMenu.appendChild(buttonDiv)
+
+        return wsMenu
+    }
+
+    static buildWorkbench(){
+        let wb =  html.createElement("div", {id:dict.WORKBENCHDIVID})
+        return wb
+    }
+
+    static renderLibrary(){
+        // Need acces to saves
+    }
     
     static renderWS(ws:Workspace){
         Renderer.updateMenu(ws)
@@ -22,12 +82,14 @@ export class Renderer {
     }
 
     static updateOption (ws:Workspace){
-        BUTTONSECTION.replaceChildren()
+        let btnDiv = document.getElementById(dict.WSMENUBUTTONDIVID)
+        if (!btnDiv){console.error("no button div for wsMenu");return}
+        btnDiv.replaceChildren()
     
         // create button forEach option
         ws.menu.optList.forEach(opt=>{
             let b1 = html.createButton(opt, ()=>{ws.doOpt(opt)})
-            BUTTONSECTION.appendChild(b1)
+            btnDiv.appendChild(b1)
         })
 
     }
@@ -49,13 +111,14 @@ export class Renderer {
     // render every nodes
     static updateNode(ws:Workspace) {
         // clean old div
-        let nodeSpace = NODESPACE
-        nodeSpace.replaceChildren()
+        let workBench = document.getElementById(dict.WORKBENCHDIVID)
+        if (!workBench){console.error("no workbench for nodeUpdate");return}
+        workBench.replaceChildren()
 
         Object.entries(ws.pieceCollection).forEach(([id, piece])=>{
             if (piece instanceof Node) {
                 let div = Renderer.createNodeDiv(piece, ws)
-                nodeSpace.appendChild(div)
+                workBench.appendChild(div)
             }
         })
     }
@@ -126,9 +189,9 @@ export class Renderer {
 
     static print1Line(id1:string, id2:string) {
         // get but1 pos
-        let but1Pos = html.getElement(id1)?.getBoundingClientRect()
+        let but1Pos = document.getElementById(id1)?.getBoundingClientRect()
         // get but2 pos
-        let but2Pos = html.getElement(id2)?.getBoundingClientRect()
+        let but2Pos = document.getElementById(id2)?.getBoundingClientRect()
         
         // create line
         let line = html.createSvg("line")
